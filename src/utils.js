@@ -4,8 +4,10 @@ export const getError = (error) => {
     : error.message;
 };
 
-export const BASE_URL = "http://localhost:5000";
+export const BASE_URL = "https://mukundi-agriculture-backend.herokuapp.com";
 
 
 //  Local URI: http://localhost:5000
 // Remote URI : https://mukundi-agriculture-backend.herokuapp.com
+// Git revert to previous commit : git log
+// git reset --hard <commit hash>
