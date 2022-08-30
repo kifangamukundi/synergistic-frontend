@@ -13,14 +13,13 @@ import { toast } from 'react-toastify';
 import { Store } from '../Store';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { getError } from '../utils';
+import { getError, BASE_URL } from '../utils';
 
 
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 
-const BASE_URL = "https://mukundi-agriculture-backend.herokuapp.com";
 
 
 const reducer = (state, action) => {

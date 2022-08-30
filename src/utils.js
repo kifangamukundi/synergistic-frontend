@@ -3,3 +3,9 @@ export const getError = (error) => {
     ? error.response.data.message
     : error.message;
 };
+
+export const BASE_URL = "http://localhost:5000";
+
+
+//  Local URI: http://localhost:5000
+// Remote URI : https://mukundi-agriculture-backend.herokuapp.com

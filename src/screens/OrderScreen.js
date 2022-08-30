@@ -12,10 +12,8 @@ import { Link } from 'react-router-dom';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { Store } from '../Store';
-import { getError } from '../utils';
+import { getError, BASE_URL } from '../utils';
 import { toast } from 'react-toastify';
-
-const BASE_URL = "https://mukundi-agriculture-backend.herokuapp.com";
 
 function reducer(state, action) {
   switch (action.type) {

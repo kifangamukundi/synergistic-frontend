@@ -8,9 +8,7 @@ import { toast } from 'react-toastify';
 import { Store } from '../Store';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { getError } from '../utils';
-
-const BASE_URL = "https://mukundi-agriculture-backend.herokuapp.com";
+import { getError, BASE_URL } from '../utils';
 
 const reducer = (state, action) => {
   switch (action.type) {

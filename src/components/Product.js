@@ -5,8 +5,7 @@ import Rating from './Rating';
 import axios from 'axios';
 import { useContext } from 'react';
 import { Store } from '../Store';
-
-const BASE_URL = "https://mukundi-agriculture-backend.herokuapp.com";
+import { BASE_URL } from '../utils';
 
 function Product(props) {
   const { product } = props;

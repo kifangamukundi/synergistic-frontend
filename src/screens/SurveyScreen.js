@@ -9,7 +9,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import { Helmet } from 'react-helmet-async';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { getError } from '../utils';
+import { getError, BASE_URL } from '../utils';
 import { Store } from '../Store';
 import { toast } from 'react-toastify';
 
@@ -26,8 +26,6 @@ import { SurveyPDF } from 'survey-pdf';
 // const SURVEY_ID = 1;
 
 StylesManager.applyTheme("modern");
-
-const BASE_URL = "https://mukundi-agriculture-backend.herokuapp.com";
 
 const reducer = (state, action) => {
   switch (action.type) {

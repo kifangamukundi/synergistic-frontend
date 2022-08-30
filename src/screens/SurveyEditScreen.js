@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { Store } from '../Store';
-import { getError } from '../utils';
+import { getError, BASE_URL } from '../utils';
 import Form from 'react-bootstrap/Form';
 import { Helmet } from 'react-helmet-async';
 import LoadingBox from '../components/LoadingBox';
@@ -22,8 +22,6 @@ import "survey-creator-core/survey-creator-core.min.css";
 import { surveyLocalization } from "survey-core";
 //Limited the number of showing locales in survey.locale property editor
 surveyLocalization.supportedLocales = ["en", "de", "es", "fr"];
-
-const BASE_URL = "https://mukundi-agriculture-backend.herokuapp.com";
 
 const reducer = (state, action) => {
   switch (action.type) {

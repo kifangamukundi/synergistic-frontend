@@ -9,8 +9,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
-const BASE_URL = "https://mukundi-agriculture-backend.herokuapp.com";
+import { BASE_URL } from '../utils';
 
 export default function CartScreen() {
   const navigate = useNavigate();

@@ -5,8 +5,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import CheckoutSteps from '../components/CheckoutSteps';
 import { Store } from '../Store';
-
-const BASE_URL = "https://mukundi-agriculture-backend.herokuapp.com";
+import { BASE_URL } from '../utils';
 
 export default function PaymentMethodScreen() {
   const navigate = useNavigate();

@@ -4,11 +4,9 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Store } from '../Store';
 import { toast } from 'react-toastify';
-import { getError } from '../utils';
+import { getError, BASE_URL } from '../utils';
 import axios from 'axios';
 
-
-const BASE_URL = "https://mukundi-agriculture-backend.herokuapp.com";
 const reducer = (state, action) => {
   switch (action.type) {
     case 'UPDATE_REQUEST':

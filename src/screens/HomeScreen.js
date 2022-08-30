@@ -9,7 +9,7 @@ import { Helmet } from 'react-helmet-async';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 // import data from '../data';
-const BASE_URL = "https://mukundi-agriculture-backend.herokuapp.com";
+import { BASE_URL } from '../utils';
 
 const reducer = (state, action) => {
   switch (action.type) {

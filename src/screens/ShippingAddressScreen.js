@@ -5,8 +5,7 @@ import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 import { Store } from '../Store';
 import CheckoutSteps from '../components/CheckoutSteps';
-
-const BASE_URL = "https://mukundi-agriculture-backend.herokuapp.com";
+import { BASE_URL } from '../utils';
 
 export default function ShippingAddressScreen() {
   const navigate = useNavigate();

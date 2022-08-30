@@ -7,9 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { Store } from '../Store';
-import { getError } from '../utils';
-
-const BASE_URL = "https://mukundi-agriculture-backend.herokuapp.com";
+import { getError, BASE_URL } from '../utils';
 
 const reducer = (state, action) => {
   switch (action.type) {

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useReducer, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { getError } from '../utils';
+import { getError, BASE_URL } from '../utils';
 import { Store } from '../Store';
 import { Helmet } from 'react-helmet-async';
 import Row from 'react-bootstrap/Row';
@@ -18,8 +18,6 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 
 import ListGroup from 'react-bootstrap/ListGroup';
-
-const BASE_URL = "https://mukundi-agriculture-backend.herokuapp.com";
 
 const reducer = (state, action) => {
   switch (action.type) {

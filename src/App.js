@@ -21,7 +21,7 @@ import OrderScreen from './screens/OrderScreen';
 import OrderHistoryScreen from './screens/OrderHistoryScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import Button from 'react-bootstrap/Button';
-import { getError } from './utils';
+import { getError, BASE_URL } from './utils';
 import axios from 'axios';
 import SearchBox from './components/SearchBox';
 import SearchScreen from './screens/SearchScreen';
@@ -46,9 +46,6 @@ import SurveyTabulatorScreen from './screens/SurveyTabulatorScreen';
 
 // Search and filter addons
 import SurveySearchScreen from './screens/SurveySearchScreen';
-// something
-
-const BASE_URL = "https://mukundi-agriculture-backend.herokuapp.com";
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
