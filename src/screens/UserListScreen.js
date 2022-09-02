@@ -18,6 +18,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 
 import ListGroup from 'react-bootstrap/ListGroup';
+import { formatDistance } from 'date-fns';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -338,6 +339,8 @@ export default function Test() {
                           <ListGroup.Item>Moderator: {user.isModerator ? 'YES' : 'NO'}</ListGroup.Item>
                           <ListGroup.Item>Field Agent: {user.isFieldAgent ? 'YES' : 'NO'}</ListGroup.Item>
                           <ListGroup.Item>Farmer: {user.isFarmer ? 'YES' : 'NO'}</ListGroup.Item>
+                          <ListGroup.Item>Created: {formatDistance(new Date(user.createdAt), new Date(), {addSuffix: true})}</ListGroup.Item>
+                          <ListGroup.Item>Updated: {formatDistance(new Date(user.updatedAt), new Date(), {addSuffix: true})}</ListGroup.Item>
                         </ListGroup>
                         <Card.Body>
                         {userInfo && (userInfo.isAdmin || userInfo.isModerator) && (

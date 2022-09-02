@@ -4,7 +4,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
 import Navbar from 'react-bootstrap/Navbar';
-import Badge from 'react-bootstrap/Badge';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Container from 'react-bootstrap/Container';
@@ -43,9 +42,6 @@ import SurveyEditScreen from './screens/SurveyEditScreen';
 import SurveyScreen from './screens/SurveyScreen';
 import SurveyAnalyzerScreen from './screens/SurveyAnalyzerScreen';
 import SurveyTabulatorScreen from './screens/SurveyTabulatorScreen';
-
-// Search and filter addons
-import SurveySearchScreen from './screens/SurveySearchScreen';
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -109,7 +105,6 @@ function App() {
               </LinkContainer>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
-                {/* <SearchBox /> */}
                 <Nav className="me-auto  w-100  justify-content-end">
                   {/* <Link to="/cart" className="nav-link">
                     Cart
@@ -119,6 +114,36 @@ function App() {
                       </Badge>
                     )}
                   </Link> */}
+                  {userInfo && (
+                    <Link to="/survey/list" className="nav-link">
+                      Survey Tools
+                    </Link>
+                  )}
+                 
+                   {userInfo && (userInfo.isAdmin || userInfo.isModerator) && (
+                    <NavDropdown title="Management" id="admin-nav-dropdown">
+                      <LinkContainer to="/user/list">
+                        <NavDropdown.Item>Users</NavDropdown.Item>
+                      </LinkContainer>
+                    </NavDropdown>
+                    )}
+
+                    {/* Dashboard section */}
+                    {userInfo && userInfo.isAdmin && (
+                    <NavDropdown title="Dashboard" id="admin-nav-dropdown">
+                      <LinkContainer to="/admin/dashboard">
+                        <NavDropdown.Item>Dashboard</NavDropdown.Item>
+                      </LinkContainer>
+                      {/* <LinkContainer to="/admin/products">
+                        <NavDropdown.Item>Products</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/admin/orders">
+                        <NavDropdown.Item>Orders</NavDropdown.Item>
+                      </LinkContainer> */}
+                    </NavDropdown>
+                  )}
+
+                  {/* User Profile section */}
                   {userInfo ? (
                     <NavDropdown title={`${userInfo.firstName} ${userInfo.lastName}`} id="basic-nav-dropdown">
                       <LinkContainer to="/profile">
@@ -127,9 +152,6 @@ function App() {
                       {/* <LinkContainer to="/orderhistory">
                         <NavDropdown.Item>Order History</NavDropdown.Item>
                       </LinkContainer> */}
-                      <LinkContainer to="/survey/list">
-                        <NavDropdown.Item>Tools</NavDropdown.Item>
-                      </LinkContainer>
                       <NavDropdown.Divider />
                       <Link
                         className="dropdown-item"
@@ -144,26 +166,7 @@ function App() {
                       Sign In
                     </Link>
                   )}
-                  {/* {userInfo && userInfo.isAdmin && (
-                    <NavDropdown title="Dashboard" id="admin-nav-dropdown">
-                      <LinkContainer to="/admin/dashboard">
-                        <NavDropdown.Item>Dashboard</NavDropdown.Item>
-                      </LinkContainer>
-                      <LinkContainer to="/admin/products">
-                        <NavDropdown.Item>Products</NavDropdown.Item>
-                      </LinkContainer>
-                      <LinkContainer to="/admin/orders">
-                        <NavDropdown.Item>Orders</NavDropdown.Item>
-                      </LinkContainer>
-                    </NavDropdown>
-                  )} */}
-                   {userInfo && (userInfo.isAdmin || userInfo.isModerator) && (
-                    <NavDropdown title="Management" id="admin-nav-dropdown">
-                      <LinkContainer to="/user/list">
-                        <NavDropdown.Item>Users</NavDropdown.Item>
-                      </LinkContainer>
-                    </NavDropdown>
-                    )}
+
                 </Nav>
               </Navbar.Collapse>
             </Container>
@@ -202,14 +205,6 @@ function App() {
               <Route path="/signup" element={<SignupScreen />} />
 
               {/* Not signed in Protected routes */}
-              <Route
-                path="/survey/search"
-                element={
-                  <ProtectedRoute>
-                    <SurveySearchScreen />
-                  </ProtectedRoute>
-                }
-              />
               <Route
                 path="/survey/list"
                 element={
