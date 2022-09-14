@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useReducer } from 'react';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 import Chart from 'react-google-charts';
 import axios from 'axios';
 import { Store } from '../Store';
@@ -8,6 +8,7 @@ import MessageBox from '../components/MessageBox';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
+import Badge from 'react-bootstrap/Badge';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -32,14 +33,20 @@ export default function DashboardScreen() {
   });
   const { state } = useContext(Store);
   const { userInfo } = state;
+  const [lastWeek, setlastWeek] = useState([]);
+  const [users, setUsers] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get(`${BASE_URL}/api/orders/summary`, {
+        const { data } = await axios.get(`${BASE_URL}/api/surveys/summary`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
+
+        // Sorting aggregated users and saving to state
+        setUsers(data.test.sort(compare))
+        setlastWeek(((data.test[0].total - data.test[1].total) / data.test[1].total) * 100);
       } catch (err) {
         dispatch({
           type: 'FETCH_FAIL',
@@ -50,9 +57,22 @@ export default function DashboardScreen() {
     fetchData();
   }, [userInfo]);
 
+  console.log(users)
+  console.log(lastWeek)
+
+  function compare(a, b) {
+    if(a._id < b._id) {
+      return 1;
+    }
+    if(a._id > b._id) {
+      return -1;
+    }
+    return 0;
+  }
+
   return (
     <div>
-      <h1>Dashboard</h1>
+      <h1>Summary</h1>
       {loading ? (
         <LoadingBox />
       ) : error ? (
@@ -60,6 +80,19 @@ export default function DashboardScreen() {
       ) : (
         <>
           <Row>
+
+            <Col md={4}>
+              <Card>
+                <Card.Body>
+                  <Card.Title>
+                    {users[0]?.total}
+                  </Card.Title>
+                  <Card.Text> {lastWeek > 0 ? <Badge bg="success">+ {lastWeek} %</Badge> : <Badge bg="danger">{lastWeek} %</Badge>}</Card.Text>
+                  <Card.Text>Users: (Compared to Last week)</Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+
             <Col md={4}>
               <Card>
                 <Card.Body>
@@ -68,56 +101,34 @@ export default function DashboardScreen() {
                       ? summary.users[0].numUsers
                       : 0}
                   </Card.Title>
-                  <Card.Text> Users</Card.Text>
+                  <Card.Text> All time Users</Card.Text>
                 </Card.Body>
               </Card>
             </Col>
+
             <Col md={4}>
               <Card>
                 <Card.Body>
                   <Card.Title>
-                    {summary.orders && summary.users[0]
-                      ? summary.orders[0].numOrders
+                    {summary.surveys && summary.surveys[0]
+                      ? summary.surveys[0].numSurveys
                       : 0}
                   </Card.Title>
-                  <Card.Text> Orders</Card.Text>
+                  <Card.Text> Survey Tools</Card.Text>
                 </Card.Body>
               </Card>
             </Col>
+
             <Col md={4}>
-              <Card>
-                <Card.Body>
-                  <Card.Title>
-                    $
-                    {summary.orders && summary.users[0]
-                      ? summary.orders[0].totalSales.toFixed(2)
-                      : 0}
-                  </Card.Title>
-                  <Card.Text> Orders</Card.Text>
-                </Card.Body>
-              </Card>
+
+            </Col>
+            <Col md={4}>
+
             </Col>
           </Row>
           <div className="my-3">
-            <h2>Sales</h2>
-            {summary.dailyOrders.length === 0 ? (
-              <MessageBox>No Sale</MessageBox>
-            ) : (
-              <Chart
-                width="100%"
-                height="400px"
-                chartType="AreaChart"
-                loader={<div>Loading Chart...</div>}
-                data={[
-                  ['Date', 'Sales'],
-                  ...summary.dailyOrders.map((x) => [x._id, x.sales]),
-                ]}
-              ></Chart>
-            )}
-          </div>
-          <div className="my-3">
-            <h2>Categories</h2>
-            {summary.productCategories.length === 0 ? (
+            <h2>Survey Categories</h2>
+            {summary.surveyCategories.length === 0 ? (
               <MessageBox>No Category</MessageBox>
             ) : (
               <Chart
@@ -127,7 +138,7 @@ export default function DashboardScreen() {
                 loader={<div>Loading Chart...</div>}
                 data={[
                   ['Category', 'Products'],
-                  ...summary.productCategories.map((x) => [x._id, x.count]),
+                  ...summary.surveyCategories.map((x) => [x._id, x.count]),
                 ]}
               ></Chart>
             )}
