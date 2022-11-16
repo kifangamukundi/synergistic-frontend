@@ -134,12 +134,12 @@ function App() {
                       <LinkContainer to="/admin/dashboard">
                         <NavDropdown.Item>Dashboard</NavDropdown.Item>
                       </LinkContainer>
-                      {/* <LinkContainer to="/admin/products">
+                      <LinkContainer to="/admin/products">
                         <NavDropdown.Item>Products</NavDropdown.Item>
                       </LinkContainer>
                       <LinkContainer to="/admin/orders">
                         <NavDropdown.Item>Orders</NavDropdown.Item>
-                      </LinkContainer> */}
+                      </LinkContainer>
                     </NavDropdown>
                   )}
 
@@ -165,6 +165,20 @@ function App() {
                     <Link className="nav-link" to="/signin">
                       Sign In
                     </Link>
+                  )}
+
+                  {userInfo && (
+                    <div className="navbar-header">
+                      <a className="navbar-brand" href="#">
+                        <img
+                          alt="Profile"
+                          src={userInfo.image}
+                          width="30"
+                          height="30"
+                          className="rounded"
+                        />
+                      </a>
+                    </div>
                   )}
 
                 </Nav>

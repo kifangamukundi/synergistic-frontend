@@ -19,6 +19,7 @@ import FormControl from 'react-bootstrap/FormControl';
 
 import ListGroup from 'react-bootstrap/ListGroup';
 import { formatDistance } from 'date-fns';
+import './userslist.css';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -324,37 +325,43 @@ export default function Test() {
                 <MessageBox>No User Found</MessageBox>
               )}
 
-              <Row>
-                {users.map((user) => (
-                  <Col sm={6} lg={4} className="mb-3" key={user._id}>
-                      <Card style={{ width: '18rem' }} key={user._id} className="mx-auto">
-                        <Card.Body>
-                          <Card.Title>{user.firstName} {user.lastName}</Card.Title>
-                        </Card.Body>
-                        <ListGroup className="list-group-flush">
-                          <ListGroup.Item>Email: {user.email}</ListGroup.Item>
-                          <ListGroup.Item>Mobile: {user.mobileNumber}</ListGroup.Item>
-                          <ListGroup.Item>Active: {user.isActive ? 'YES' : 'NO'}</ListGroup.Item>
-                          <ListGroup.Item>Admin: {user.isAdmin ? 'YES' : 'NO'}</ListGroup.Item>
-                          <ListGroup.Item>Moderator: {user.isModerator ? 'YES' : 'NO'}</ListGroup.Item>
-                          <ListGroup.Item>Field Agent: {user.isFieldAgent ? 'YES' : 'NO'}</ListGroup.Item>
-                          <ListGroup.Item>Farmer: {user.isFarmer ? 'YES' : 'NO'}</ListGroup.Item>
-                          <ListGroup.Item>Created: {formatDistance(new Date(user.createdAt), new Date(), {addSuffix: true})}</ListGroup.Item>
-                          <ListGroup.Item>Updated: {formatDistance(new Date(user.updatedAt), new Date(), {addSuffix: true})}</ListGroup.Item>
-                        </ListGroup>
-                        <Card.Body>
-                        {userInfo && (userInfo.isAdmin || userInfo.isModerator) && (
-                          <Button onClick={() => navigate(`/user/edit/${user._id}`)} variant="success">Edit</Button>
-                        )}
-                          &nbsp; &nbsp;
-                          {userInfo && userInfo.isAdmin && (
-                          <Button onClick={() => deleteHandler(user)} variant="danger">Delete</Button>
-                          )}
-                        </Card.Body>
-                      </Card>
-                  </Col>
-                ))}
-              </Row>
+        <div className="container profile-page">
+          <div className="row">
+      
+            {users.map((user) => (
+            <div className="col-xl-6 col-lg-7 col-md-12" key={user._id}>
+                <div className="card profile-header">
+                    <div className="body">
+                        <div className="row">
+                            <div className="col-lg-4 col-md-4 col-12">
+                              <div className="profile-image float-md-right">
+                                <img src={user.image} alt="" /> 
+                              </div>
+                            </div>
+                            <div className="col-lg-8 col-md-8 col-12">
+                                <h4 className="m-t-0 m-b-0"><strong>{user.firstName}</strong> {user.lastName}</h4>
+                                <span className="job_post">{user.mobileNumber}</span>
+                                <p>Created: {formatDistance(new Date(user.createdAt), new Date(), {addSuffix: true})}</p>
+                                <p>Updated: {formatDistance(new Date(user.updatedAt), new Date(), {addSuffix: true})}</p>
+                                <p>{user.email}</p>
+                                <div>
+                                  {userInfo && (userInfo.isAdmin || userInfo.isModerator) && (
+                                  <Button onClick={() => navigate(`/user/edit/${user._id}`)} variant="success">Edit</Button>
+                                  )}
+                                  &nbsp; &nbsp;
+                                  {userInfo && userInfo.isAdmin && (
+                                  <Button onClick={() => deleteHandler(user)} variant="danger">Delete</Button>
+                                  )}
+                                </div>
+                            </div>                
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+            ))}
+
+            </div> 
+          </div>
 
               <div>
                 {[...Array(pages).keys()].map((x) => (

@@ -4,12 +4,10 @@ export const getError = (error) => {
     : error.message;
 };
 
-export const BASE_URL = "https://backend-xtowfqi6oq-uc.a.run.app";
+export const BASE_URL = "http://localhost:5000";
 
 
 //  Local URI: http://localhost:5000
-// Remote URI : https://mukundi-agriculture-backend.herokuapp.com
-// Another: https://lovely-fox-glasses.cyclic.app
-// Cloud run: https://backend-xtowfqi6oq-uc.a.run.app/
+// Cloud run: https://backend-xtowfqi6oq-uc.a.run.app
 // Git revert to previous commit : git log
 // git reset --hard <commit hash>
