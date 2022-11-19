@@ -1,14 +1,56 @@
-import React, { useContext, useEffect, useReducer, useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import * as React from 'react';
+import { useTheme } from '@mui/material/styles';
+import Link from '@mui/material/Link';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import Grid from '@mui/material/Grid';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import CardActions from '@mui/material/CardActions';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Drawer from '@mui/material/Drawer';
+import FilterListIcon from '@mui/icons-material/FilterList';
+
+import Container from '@mui/material/Container';
+
+
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Divider from '@mui/material/Divider';
+import GroupIcon from '@mui/icons-material/Group';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import AddModeratorIcon from '@mui/icons-material/AddModerator';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import AgricultureIcon from '@mui/icons-material/Agriculture';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
+
+import Paper from '@mui/material/Paper';
+import InputBase from '@mui/material/InputBase';
+import SearchIcon from '@mui/icons-material/Search';
+
+
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
+
+import { useContext, useEffect, useReducer, useState } from 'react';
+import { Link as ReactRouterLink, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import {  toast } from 'material-react-toastify';
 
 import { getError, BASE_URL } from '../utils';
 import { Store } from '../Store';
 import { Helmet } from 'react-helmet-async';
+
+// shiet
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
@@ -20,92 +62,94 @@ import FormControl from 'react-bootstrap/FormControl';
 
 import ListGroup from 'react-bootstrap/ListGroup';
 import { formatDistance } from 'date-fns';
-import './userslist.css';
 
 const reducer = (state, action) => {
-  switch (action.type) {
-    case 'FETCH_REQUEST':
-      return { ...state, loading: true };
-    case 'FETCH_SUCCESS':
-      return {
-        ...state,
-        users: action.payload.users,
-        page: action.payload.page,
-        pages: action.payload.pages,
-        countUsers: action.payload.countUsers,
-        loading: false,
-      };
-    case 'FETCH_FAIL':
-      return { ...state, loading: false, error: action.payload };
-    case 'DELETE_REQUEST':
-      return { ...state, loadingDelete: true, successDelete: false };
-    case 'DELETE_SUCCESS':
-      return {
-        ...state,
-        loadingDelete: false,
-        successDelete: true,
-      };
-    case 'DELETE_FAIL':
-      return { ...state, loadingDelete: false, successDelete: false };
-    case 'DELETE_RESET':
-      return { ...state, loadingDelete: false, successDelete: false };
-    default:
-      return state;
-  }
-};
+    switch (action.type) {
+      case 'FETCH_REQUEST':
+        return { ...state, loading: true };
+      case 'FETCH_SUCCESS':
+        return {
+          ...state,
+          users: action.payload.users,
+          page: action.payload.page,
+          pages: action.payload.pages,
+          countUsers: action.payload.countUsers,
+          loading: false,
+        };
+      case 'FETCH_FAIL':
+        return { ...state, loading: false, error: action.payload };
+      case 'DELETE_REQUEST':
+        return { ...state, loadingDelete: true, successDelete: false };
+      case 'DELETE_SUCCESS':
+        return {
+          ...state,
+          loadingDelete: false,
+          successDelete: true,
+        };
+      case 'DELETE_FAIL':
+        return { ...state, loadingDelete: false, successDelete: false };
+      case 'DELETE_RESET':
+        return { ...state, loadingDelete: false, successDelete: false };
+      default:
+        return state;
+    }
+  };
+  
+  const isUserActive = [
+    {
+      name: 'Active',
+      value: 'true',
+    },
+    {
+      name: 'Not Active',
+      value: 'false',
+    },
+  ];
+  const isUserAdmin = [
+    {
+      name: 'Admin',
+      value: 'true',
+    },
+    {
+      name: 'Not Admin',
+      value: 'false',
+    },
+  ];
+  const isUserModerator = [
+    {
+      name: 'Moderator',
+      value: 'true',
+    },
+    {
+      name: 'Not Moderator',
+      value: 'false',
+    },
+  ];
+  const isUserFieldAgent = [
+    {
+      name: 'Field Agent',
+      value: 'true',
+    },
+    {
+      name: 'Not Field Agent',
+      value: 'false',
+    },
+  ];
+  const isUserFarmer = [
+    {
+      name: 'Farmer',
+      value: 'true',
+    },
+    {
+      name: 'Not Farmer',
+      value: 'false',
+    },
+  ];
 
-const isUserActive = [
-  {
-    name: 'Active',
-    value: 'true',
-  },
-  {
-    name: 'Not Active',
-    value: 'false',
-  },
-];
-const isUserAdmin = [
-  {
-    name: 'Admin',
-    value: 'true',
-  },
-  {
-    name: 'Not Admin',
-    value: 'false',
-  },
-];
-const isUserModerator = [
-  {
-    name: 'Moderator',
-    value: 'true',
-  },
-  {
-    name: 'Not Moderator',
-    value: 'false',
-  },
-];
-const isUserFieldAgent = [
-  {
-    name: 'Field Agent',
-    value: 'true',
-  },
-  {
-    name: 'Not Field Agent',
-    value: 'false',
-  },
-];
-const isUserFarmer = [
-  {
-    name: 'Farmer',
-    value: 'true',
-  },
-  {
-    name: 'Not Farmer',
-    value: 'false',
-  },
-];
+export default function UserListScreen() {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-export default function Test() {
+  const theme = useTheme();
   const navigate = useNavigate();
   const [queryParams, setQueryParams] = useState('');
   const { search } = useLocation();
@@ -182,187 +226,244 @@ export default function Test() {
       }
     }
   };
+  const handleChipDelete = () => {
+    navigate('/user/list');
+  };
+
   return (
     <div>
       <Helmet>
         <title>Search Users</title>
       </Helmet>
-      <Row>
-        <Col md={3}>
-          <h4 className='mb-3'>By Admin Role</h4>
-          <ListGroup>
-              <Link to={getFilterUrl({ isAdmin: 'all' })} style={{textDecoration: 'none'}}>
-                <ListGroup.Item variant={'all' === isAdmin ? 'primary' : 'light'}>
-                  Any
-                </ListGroup.Item>
-              </Link>
-
-              {isUserAdmin.map((iua) => (
-                <div key={iua.value}>
-                  <Link to={getFilterUrl({ isAdmin: iua.value })} style={{textDecoration: 'none'}}>
-                    <ListGroup.Item variant={iua.value === isAdmin ? 'primary' : 'light'}>
-                      {iua.name}
-                    </ListGroup.Item>
-                  </Link>
-                </div>
-              ))}
-          </ListGroup>
-          <h4 className='mb-3'>By Moderator Role</h4>
-          <ListGroup>
-              <Link to={getFilterUrl({ isModerator: 'all' })} style={{textDecoration: 'none'}}>
-                <ListGroup.Item variant={'all' === isModerator ? 'primary' : 'light'}>
-                  Any
-                </ListGroup.Item>
-              </Link>
-
-              {isUserModerator.map((ium) => (
-                <div key={ium.value}>
-                  <Link to={getFilterUrl({ isModerator: ium.value })} style={{textDecoration: 'none'}}>
-                    <ListGroup.Item variant={ium.value === isModerator ? 'primary' : 'light'}>
-                      {ium.name}
-                    </ListGroup.Item>
-                  </Link>
-                </div>
-              ))}
-          </ListGroup>
-          <h4 className='mb-3'>By Field Agent Role</h4>
-          <ListGroup>
-              <Link to={getFilterUrl({ isFieldAgent: 'all' })} style={{textDecoration: 'none'}}>
-                <ListGroup.Item variant={'all' === isFieldAgent ? 'primary' : 'light'}>
-                  Any
-                </ListGroup.Item>
-              </Link>
-
-              {isUserFieldAgent.map((iufa) => (
-                <div key={iufa.value}>
-                  <Link to={getFilterUrl({ isFieldAgent: iufa.value })} style={{textDecoration: 'none'}}>
-                    <ListGroup.Item variant={iufa.value === isFieldAgent ? 'primary' : 'light'}>
-                      {iufa.name}
-                    </ListGroup.Item>
-                  </Link>
-                </div>
-              ))}
-          </ListGroup>
-          <h4 className='mb-3'>By Farmer Role</h4>
-          <ListGroup>
-              <Link to={getFilterUrl({ isFarmer: 'all' })} style={{textDecoration: 'none'}}>
-                <ListGroup.Item variant={'all' === isFarmer ? 'primary' : 'light'}>
-                  Any
-                </ListGroup.Item>
-              </Link>
-
-              {isUserFarmer.map((iuf) => (
-                <div key={iuf.value}>
-                  <Link to={getFilterUrl({ isFarmer: iuf.value })} style={{textDecoration: 'none'}}>
-                    <ListGroup.Item variant={iuf.value === isFarmer ? 'primary' : 'light'}>
-                      {iuf.name}
-                    </ListGroup.Item>
-                  </Link>
-                </div>
-              ))}
-          </ListGroup>
-          <h4 className='mb-3'>By Current Status</h4>
-          <ListGroup>
-              <Link to={getFilterUrl({ isActive: 'all' })} style={{textDecoration: 'none'}}>
-                <ListGroup.Item variant={'all' === isActive ? 'primary' : 'light'}>
-                  Any
-                </ListGroup.Item>
-              </Link>
-
-              {isUserActive.map((iua) => (
-                <div key={iua.value}>
-                  <Link to={getFilterUrl({ isActive: iua.value })} style={{textDecoration: 'none'}}>
-                    <ListGroup.Item variant={iua.value === isActive ? 'primary' : 'light'}>
-                      {iua.name}
-                    </ListGroup.Item>
-                  </Link>
-                </div>
-              ))}
-          </ListGroup>
-        </Col>
-        <Col md={9}>
           {loadingDelete && <LoadingBox></LoadingBox>}
           {loading ? (
             <LoadingBox></LoadingBox>
           ) : error ? (
-            <MessageBox variant="danger">{error}</MessageBox>
+            <MessageBox severity="error">{error}</MessageBox>
           ) : (
             <>
-              <Row className="justify-content-between mb-3">
-                <Col md={6}>
-                  <div>
-                    {countUsers === 0 ? 'No' : countUsers} Results
-                    {query !== 'all' && ' : ' + query}
-                    {query !== 'all' ? (
-                      <Button
-                        variant="light"
-                        onClick={() => navigate('/user/list')}
-                      >
-                        <i className="fas fa-times-circle"></i>
-                      </Button>
-                    ) : null}
-                  </div>
-                </Col>
-                <Col md={6}>
-                  <Form className="d-flex me-auto" onSubmit={submitHandler}>
-                    <InputGroup>
-                      <FormControl
-                        type="text"
-                        name="q"
-                        id="q"
-                        onChange={(e) => setQueryParams(e.target.value)}
-                        placeholder="search users..."
-                        aria-label="Search users"
-                        aria-describedby="button-search"
-                      ></FormControl>
-                      <Button variant="outline-success" type="submit" id="button-search">
-                        <i className="fas fa-search"></i>
-                      </Button>
-                    </InputGroup>
-                  </Form>
-                </Col>
-              </Row>
+            
+              {/* Search feature */}
+              <Paper
+                component="form"
+                sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+              >
+                <InputBase
+                  sx={{ ml: 1, flex: 1 }}
+                  placeholder="Search For Users"
+                  inputProps={{ 'aria-label': 'search users' }}
+                  onChange={(e) => setQueryParams(e.target.value)}
+                  onKeyPress={e => e.key === 'Enter' && e.preventDefault()}
+                />
+                <IconButton onClick={submitHandler} type="button" sx={{ p: '10px' }} aria-label="search">
+                  <SearchIcon />
+                </IconButton>
+                <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                <IconButton color="primary" sx={{ p: '10px' }} aria-label="directions">
+                  <FilterListIcon onClick={() => setIsDrawerOpen(true)}/>
+                </IconButton>
+              </Paper>
+              <br/>
+
               {users.length === 0 && (
                 <MessageBox>No User Found</MessageBox>
               )}
+              <br/>
 
-        <div className="container profile-page">
-          <div className="row">
-      
-            {users.map((user) => (
-            <div className="col-xl-6 col-lg-7 col-md-12" key={user._id}>
-                <div className="card profile-header">
-                    <div className="body">
-                        <div className="row">
-                            <div className="col-lg-4 col-md-4 col-12">
-                              <div className="profile-image float-md-right">
-                                <img src={user.image} alt="" /> 
-                              </div>
-                            </div>
-                            <div className="col-lg-8 col-md-8 col-12">
-                                <h4 className="m-t-0 m-b-0"><strong>{user.firstName}</strong> {user.lastName}</h4>
-                                <span className="job_post">{user.mobileNumber}</span>
-                                <p>Created: {formatDistance(new Date(user.createdAt), new Date(), {addSuffix: true})}</p>
-                                <p>Updated: {formatDistance(new Date(user.updatedAt), new Date(), {addSuffix: true})}</p>
-                                <p>{user.email}</p>
-                                <div>
-                                  {userInfo && (userInfo.isAdmin || userInfo.isModerator) && (
-                                  <Button onClick={() => navigate(`/user/edit/${user._id}`)} variant="success">Edit</Button>
-                                  )}
-                                  &nbsp; &nbsp;
-                                  {userInfo && userInfo.isAdmin && (
-                                  <Button onClick={() => deleteHandler(user)} variant="danger">Delete</Button>
-                                  )}
-                                </div>
-                            </div>                
-                        </div>
-                    </div>                    
-                </div>
-            </div>
-            ))}
+              {/* Results */}
+              <Stack direction="row" spacing={1}>
+              {countUsers === 0 ? 'No' : countUsers} Results
+                {query !== 'all' && ' for '}
+                {query !== 'all' ? (
+                  <Chip label={query} variant="outlined" onDelete={handleChipDelete} />
+                ) : null}
+              </Stack>
+              <br/>
+              
+              {/* Filter Feature */}
+              <Drawer anchor='right' open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+                <Box p={2} width='250px' textAlign='center' role='presentation'>
+                  <nav aria-label="main mailbox folders">
+                    <List>
+                      
+                      {/* Admins */}
+                      <Link style={{textDecoration: 'none'}} component={ReactRouterLink} to={getFilterUrl({ isAdmin: 'all' })}>
+                        <ListItem disablePadding>
+                          <ListItemButton style={'all' === isAdmin ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                            <ListItemIcon>
+                              <GroupIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="All Including Admins" />
+                          </ListItemButton>
+                        </ListItem>
+                        </Link>
 
-            </div> 
-          </div>
+                        {isUserAdmin.map((iua) => (
+                          <Link style={{textDecoration: 'none'}} key={iua.value} component={ReactRouterLink} to={getFilterUrl({ isAdmin: iua.value })}>
+                            <ListItem disablePadding key={iua.value}>
+                              <ListItemButton style={iua.value === isAdmin ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                                <ListItemIcon>
+                                  <AdminPanelSettingsIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={iua.name} />
+                              </ListItemButton>
+                            </ListItem>
+                        </Link>
+                        ))}
+
+                      {/* Moderators */}
+                      <Divider />
+                      <Link style={{textDecoration: 'none'}} component={ReactRouterLink} to={getFilterUrl({ isModerator: 'all' })}>
+                        <ListItem disablePadding>
+                          <ListItemButton style={'all' === isModerator ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                            <ListItemIcon>
+                              <GroupIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="All Including Moderators" />
+                          </ListItemButton>
+                        </ListItem>
+                        </Link>
+                        
+                        {isUserModerator.map((ium) => (
+                          <Link style={{textDecoration: 'none'}} key={ium.value} component={ReactRouterLink} to={getFilterUrl({ isModerator: ium.value })}>
+                            <ListItem disablePadding key={ium.value}>
+                              <ListItemButton style={ium.value === isModerator ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                                <ListItemIcon>
+                                  <AddModeratorIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={ium.name} />
+                              </ListItemButton>
+                            </ListItem>
+                        </Link>
+                        ))}
+
+                      {/* Field Agents */}
+                      <Divider />
+                      <Link style={{textDecoration: 'none'}} component={ReactRouterLink} to={getFilterUrl({ isFieldAgent: 'all' })}>
+                        <ListItem disablePadding>
+                          <ListItemButton style={'all' === isFieldAgent ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                            <ListItemIcon>
+                              <GroupIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="All Including FieldAgents" />
+                          </ListItemButton>
+                        </ListItem>
+                        </Link>
+                        
+                        {isUserFieldAgent.map((iufa) => (
+                          <Link style={{textDecoration: 'none'}} key={iufa.value} component={ReactRouterLink} to={getFilterUrl({ isFieldAgent: iufa.value })}>
+                            <ListItem disablePadding key={iufa.value}>
+                              <ListItemButton style={iufa.value === isFieldAgent ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                                <ListItemIcon>
+                                  <SupportAgentIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={iufa.name} />
+                              </ListItemButton>
+                            </ListItem>
+                        </Link>
+                        ))}
+
+                      {/* Farmers */}
+                      <Divider />
+                      <Link style={{textDecoration: 'none'}} component={ReactRouterLink} to={getFilterUrl({ isFarmer: 'all' })}>
+                        <ListItem disablePadding>
+                          <ListItemButton style={'all' === isFarmer ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                            <ListItemIcon>
+                              <GroupIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="All Including Farmers" />
+                          </ListItemButton>
+                        </ListItem>
+                        </Link>
+                        
+                        {isUserFarmer.map((iuf) => (
+                          <Link style={{textDecoration: 'none'}} key={iuf.value} component={ReactRouterLink} to={getFilterUrl({ isFarmer: iuf.value })}>
+                            <ListItem disablePadding key={iuf.value}>
+                              <ListItemButton style={iuf.value === isFarmer ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                                <ListItemIcon>
+                                  <AgricultureIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={iuf.name} />
+                              </ListItemButton>
+                            </ListItem>
+                        </Link>
+                        ))}
+
+                      {/* Active */}
+                      <Divider />
+                      <Link style={{textDecoration: 'none'}} component={ReactRouterLink} to={getFilterUrl({ isActive: 'all' })}>
+                        <ListItem disablePadding>
+                          <ListItemButton style={'all' === isActive ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                            <ListItemIcon>
+                              <MoreHorizIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Both Active and Inactive" />
+                          </ListItemButton>
+                        </ListItem>
+                        </Link>
+                        
+                        {isUserActive.map((iua) => (
+                          <Link style={{textDecoration: 'none'}} key={iua.value} component={ReactRouterLink} to={getFilterUrl({ isActive: iua.value })}>
+                            <ListItem disablePadding key={iua.value}>
+                              <ListItemButton style={iua.value === isActive ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                                <ListItemIcon>
+                                  <NotificationImportantIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={iua.name} />
+                              </ListItemButton>
+                            </ListItem>
+                        </Link>
+                        ))}
+
+                    </List>
+                  </nav>
+                </Box>
+              </Drawer>
+
+              {/* cards */}
+              <Container>
+                <Grid container spacing={3}>
+                  
+                {users.map((user) => (
+                  <Grid item xs={12} sm={6} md={3}>
+
+                    <Card sx={{ maxWidth: 345 }} elevation={1}>
+                      <CardMedia
+                        component="img"
+                        height="140"
+                        image={user.image}
+                        alt={user.firstName}
+                      />
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                          {user.firstName} {user.lastName}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {user.mobileNumber}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {user.email}
+                        </Typography>
+                      </CardContent>
+                      <CardActions>
+                        {userInfo && (userInfo.isAdmin || userInfo.isModerator) && (
+                          <IconButton onClick={() => navigate(`/user/edit/${user._id}`)} aria-label="edit">
+                              <EditIcon/>
+                          </IconButton>
+                        )}
+                        {userInfo && userInfo.isAdmin && (
+                        <IconButton onClick={() => deleteHandler(user)} aria-label="delete">
+                            <DeleteIcon/>
+                        </IconButton>
+                        )}
+                      </CardActions>
+                    </Card>
+
+                  </Grid>
+                  ))}
+
+                </Grid>
+              </Container>
 
               <div>
                 {[...Array(pages).keys()].map((x) => (
@@ -382,8 +483,6 @@ export default function Test() {
               </div>
             </>
           )}
-        </Col>
-      </Row>
     </div>
   );
 }
