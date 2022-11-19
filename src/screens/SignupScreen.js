@@ -1,111 +1,181 @@
+import * as React from 'react';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 import Axios from 'axios';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+import { Link as ReactRouterLink, useLocation, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useContext, useEffect, useState } from 'react';
 import { Store } from '../Store';
 import { toast } from 'react-toastify';
 import { getError, BASE_URL } from '../utils';
 
+
+const theme = createTheme();
+
 export default function SignupScreen() {
-  const navigate = useNavigate();
-  const { search } = useLocation();
-  const redirectInUrl = new URLSearchParams(search).get('redirect');
-  const redirect = redirectInUrl ? redirectInUrl : '/';
+    const navigate = useNavigate();
+    const { search } = useLocation();
+    const redirectInUrl = new URLSearchParams(search).get('redirect');
+    const redirect = redirectInUrl ? redirectInUrl : '/';
 
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [mobileNumber, setMobileNumber] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [mobileNumber, setMobileNumber] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
-  const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { userInfo } = state;
-  const submitHandler = async (e) => {
-    e.preventDefault();
-    if (password !== confirmPassword) {
-      toast.error('Passwords do not match');
-      return;
-    }
-    try {
-      const { data } = await Axios.post(`${BASE_URL}/api/users/signup`, {
-        firstName,
-        lastName,
-        mobileNumber,
-        email,
-        password,
-      });
-      ctxDispatch({ type: 'USER_SIGNIN', payload: data });
-      localStorage.setItem('userInfo', JSON.stringify(data));
-      navigate(redirect || '/');
-    } catch (err) {
-      toast.error(getError(err));
-    }
-  };
+    const { state, dispatch: ctxDispatch } = useContext(Store);
+    const { userInfo } = state;
+    const submitHandler = async (e) => {
+        e.preventDefault();
+        if (password !== confirmPassword) {
+        toast.error('Passwords do not match');
+        return;
+        }
+        try {
+        const { data } = await Axios.post(`${BASE_URL}/api/users/signup`, {
+            firstName,
+            lastName,
+            mobileNumber,
+            email,
+            password,
+        });
+        ctxDispatch({ type: 'USER_SIGNIN', payload: data });
+        localStorage.setItem('userInfo', JSON.stringify(data));
+        navigate(redirect || '/');
+        } catch (err) {
+        toast.error(getError(err));
+        }
+    };
 
-  useEffect(() => {
-    if (userInfo) {
-      navigate(redirect);
-    }
-  }, [navigate, redirect, userInfo]);
+    useEffect(() => {
+        if (userInfo) {
+        navigate(redirect);
+        }
+    }, [navigate, redirect, userInfo]);
 
   return (
-    <Container className="small-container">
-      <Helmet>
-        <title>Sign Up</title>
-      </Helmet>
-      <h1 className="my-3">Sign Up</h1>
-      <Form onSubmit={submitHandler}>
-        <Form.Group className="mb-3" controlId="firstName">
-          <Form.Label>First Name</Form.Label>
-          <Form.Control onChange={(e) => setFirstName(e.target.value)} required />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="lastName">
-          <Form.Label>Last Name</Form.Label>
-          <Form.Control onChange={(e) => setLastName(e.target.value)} required />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="mobileNumber">
-          <Form.Label>Mobile Number</Form.Label>
-          <Form.Control onChange={(e) => setMobileNumber(e.target.value)} required />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="email">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            required
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            required
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Form.Group className="mb-3" controlId="confirmPassword">
-            <Form.Label>Confirm Password</Form.Label>
-            <Form.Control
-              type="password"
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-          </Form.Group>
-        </Form.Group>
-        <div className="mb-3">
-          <Button type="submit">Sign Up</Button>
-        </div>
-        <div className="mb-3">
-          Already have an account?{' '}
-          <Link to={`/signin?redirect=${redirect}`}>Sign-In</Link>
-        </div>
-      </Form>
-    </Container>
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <Helmet>
+            <title>Sign Up</title>
+        </Helmet>
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign up
+          </Typography>
+          <Box component="form" noValidate onSubmit={submitHandler} sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  autoComplete="given-name"
+                  name="firstName"
+                  required
+                  fullWidth
+                  id="firstName"
+                  label="First Name"
+                  autoFocus
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  id="lastName"
+                  label="Last Name"
+                  name="lastName"
+                  autoComplete="family-name"
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="mobileNumber"
+                  label="Mobile Number"
+                  name="mobileNumber"
+                  autoComplete="mobileNumber"
+                  onChange={(e) => setMobileNumber(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="new-password"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  type="password"
+                  id="confirmPassword"
+                  autoComplete="confirm-password"
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </Grid>
+            </Grid>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Sign Up
+            </Button>
+            <Grid container justifyContent="flex-end">
+              <Grid item>
+                <Link component={ReactRouterLink} to={`/signin?redirect=${redirect}`} variant="body2">
+                  Already have an account? Sign in
+                </Link>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 }
