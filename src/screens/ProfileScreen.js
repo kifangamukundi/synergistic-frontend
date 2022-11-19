@@ -3,7 +3,8 @@ import { Helmet } from 'react-helmet-async';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Store } from '../Store';
-import { toast } from 'react-toastify';
+import {  toast } from 'material-react-toastify';
+
 import { getError, BASE_URL } from '../utils';
 import axios from 'axios';
 import './profile.css';

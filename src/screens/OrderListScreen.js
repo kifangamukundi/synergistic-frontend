@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useContext, useEffect, useReducer } from 'react';
-import { toast } from 'react-toastify';
+import {  toast } from 'material-react-toastify';
+
 import Button from 'react-bootstrap/Button';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';

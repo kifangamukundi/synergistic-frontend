@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useReducer, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import {  toast } from 'material-react-toastify';
+
 import { getError, BASE_URL } from '../utils';
 import { Store } from '../Store';
 import { Helmet } from 'react-helmet-async';

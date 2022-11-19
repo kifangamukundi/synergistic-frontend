@@ -1,9 +1,11 @@
-import Spinner from 'react-bootstrap/Spinner';
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
 
 export default function LoadingBox() {
   return (
-    <Spinner animation="border" variant="success" role="status">
-      <span className="visually-hidden">Loading...</span>
-    </Spinner>
+    <Box sx={{ width: '100%' }}>
+      <LinearProgress color="secondary" />
+    </Box>
   );
 }

@@ -15,7 +15,8 @@ import MessageBox from '../components/MessageBox';
 import { getError, BASE_URL } from '../utils';
 import { Store } from '../Store';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import { toast } from 'react-toastify';
+import {  toast } from 'material-react-toastify';
+
 
 const reducer = (state, action) => {
   switch (action.type) {

@@ -1,6 +1,6 @@
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast, ToastContainer } from 'material-react-toastify';
+import 'material-react-toastify/dist/ReactToastify.min.css';
 import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
 import Navbar from 'react-bootstrap/Navbar';
@@ -81,7 +81,7 @@ function App() {
             : 'site-container d-flex flex-column'
         }
       >
-        <ToastContainer position="bottom-center" limit={1} />
+        <ToastContainer />
         <header>
           <Navbar bg="light" variant="light" expand="lg">
             <Container>

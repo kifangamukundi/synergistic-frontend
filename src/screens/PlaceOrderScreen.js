@@ -7,7 +7,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
-import { toast } from 'react-toastify';
+import {  toast } from 'material-react-toastify';
+
 import { getError, BASE_URL } from '../utils';
 import { Store } from '../Store';
 import CheckoutSteps from '../components/CheckoutSteps';

@@ -16,7 +16,8 @@ import { Link as ReactRouterLink, useLocation, useNavigate } from 'react-router-
 import { Helmet } from 'react-helmet-async';
 import { useContext, useEffect, useState } from 'react';
 import { Store } from '../Store';
-import { toast } from 'react-toastify';
+import {  toast } from 'material-react-toastify';
+
 import { getError, BASE_URL } from '../utils';
 
 
@@ -166,7 +167,7 @@ export default function SignupScreen() {
             >
               Sign Up
             </Button>
-            <Grid container justifyContent="flex-end">
+            <Grid container>
               <Grid item>
                 <Link component={ReactRouterLink} to={`/signin?redirect=${redirect}`} variant="body2">
                   Already have an account? Sign in

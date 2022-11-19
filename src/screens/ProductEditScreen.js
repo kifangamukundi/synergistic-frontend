@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useReducer, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import {  toast } from 'material-react-toastify';
+
 import axios from 'axios';
 import { Store } from '../Store';
 import { getError, BASE_URL } from '../utils';

@@ -3,8 +3,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -18,7 +16,8 @@ import { Link as ReactRouterLink, useLocation, useNavigate } from 'react-router-
 import { Helmet } from 'react-helmet-async';
 import { useContext, useEffect, useState } from 'react';
 import { Store } from '../Store';
-import { toast } from 'react-toastify';
+import {  toast } from 'material-react-toastify';
+
 import { getError, BASE_URL } from '../utils';
 
 const theme = createTheme();
