@@ -14,12 +14,25 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import Axios from 'axios';
-import { Link as ReactRouterLink, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useContext, useEffect, useState } from 'react';
 import { Store } from '../Store';
 import { toast } from 'react-toastify';
 import { getError, BASE_URL } from '../utils';
+
+function Copyright(props) {
+  return (
+    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+      {'Copyright © '}
+      <Link color="inherit" href="https://mui.com/">
+        Your Website
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
+}
 
 const theme = createTheme();
 
@@ -101,6 +114,10 @@ export default function SigninScreen() {
               autoComplete="current-password"
               onChange={(e) => setPassword(e.target.value)}
             />
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+            />
             <Button
               type="submit"
               fullWidth
@@ -110,14 +127,20 @@ export default function SigninScreen() {
               Sign In
             </Button>
             <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2">
+                  Forgot password?
+                </Link>
+              </Grid>
               <Grid item>
-                <Link component={ReactRouterLink} to={`/signup?redirect=${redirect}`} variant="body2">
+                <Link href={`/signup?redirect=${redirect}`} variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
+        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   );
