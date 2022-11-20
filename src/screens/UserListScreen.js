@@ -3,6 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
@@ -14,7 +15,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Drawer from '@mui/material/Drawer';
 import FilterListIcon from '@mui/icons-material/FilterList';
 
-import Container from '@mui/material/Container';
 
 
 import List from '@mui/material/List';
@@ -49,18 +49,11 @@ import { Store } from '../Store';
 import { Helmet } from 'react-helmet-async';
 
 // shiet
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import LinkContainer from 'react-router-bootstrap/LinkContainer';
 
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
-import FormControl from 'react-bootstrap/FormControl';
-
-import ListGroup from 'react-bootstrap/ListGroup';
 import { formatDistance } from 'date-fns';
 
 const reducer = (state, action) => {
@@ -259,7 +252,7 @@ export default function UserListScreen() {
                   <SearchIcon />
                 </IconButton>
                 <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                <IconButton color="primary" sx={{ p: '10px' }} aria-label="directions">
+                <IconButton sx={{ p: '10px', color: "#00693e" }} aria-label="directions">
                   <FilterListIcon onClick={() => setIsDrawerOpen(true)}/>
                 </IconButton>
               </Paper>
@@ -287,9 +280,9 @@ export default function UserListScreen() {
                     <List>
                       
                       {/* Admins */}
-                      <Link style={{textDecoration: 'none'}} component={ReactRouterLink} to={getFilterUrl({ isAdmin: 'all' })}>
+                      <Link style={{textDecoration: 'none', color: 'black'}} component={ReactRouterLink} to={getFilterUrl({ isAdmin: 'all' })}>
                         <ListItem disablePadding>
-                          <ListItemButton style={'all' === isAdmin ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                          <ListItemButton style={'all' === isAdmin ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                             <ListItemIcon>
                               <GroupIcon />
                             </ListItemIcon>
@@ -299,9 +292,9 @@ export default function UserListScreen() {
                         </Link>
 
                         {isUserAdmin.map((iua) => (
-                          <Link style={{textDecoration: 'none'}} key={iua.value} component={ReactRouterLink} to={getFilterUrl({ isAdmin: iua.value })}>
+                          <Link style={{textDecoration: 'none', color: 'black'}} key={iua.value} component={ReactRouterLink} to={getFilterUrl({ isAdmin: iua.value })}>
                             <ListItem disablePadding key={iua.value}>
-                              <ListItemButton style={iua.value === isAdmin ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                              <ListItemButton style={iua.value === isAdmin ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                                 <ListItemIcon>
                                   <AdminPanelSettingsIcon />
                                 </ListItemIcon>
@@ -313,9 +306,9 @@ export default function UserListScreen() {
 
                       {/* Moderators */}
                       <Divider />
-                      <Link style={{textDecoration: 'none'}} component={ReactRouterLink} to={getFilterUrl({ isModerator: 'all' })}>
+                      <Link style={{textDecoration: 'none', color: 'black'}} component={ReactRouterLink} to={getFilterUrl({ isModerator: 'all' })}>
                         <ListItem disablePadding>
-                          <ListItemButton style={'all' === isModerator ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                          <ListItemButton style={'all' === isModerator ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                             <ListItemIcon>
                               <GroupIcon />
                             </ListItemIcon>
@@ -325,9 +318,9 @@ export default function UserListScreen() {
                         </Link>
                         
                         {isUserModerator.map((ium) => (
-                          <Link style={{textDecoration: 'none'}} key={ium.value} component={ReactRouterLink} to={getFilterUrl({ isModerator: ium.value })}>
+                          <Link style={{textDecoration: 'none', color: 'black'}} key={ium.value} component={ReactRouterLink} to={getFilterUrl({ isModerator: ium.value })}>
                             <ListItem disablePadding key={ium.value}>
-                              <ListItemButton style={ium.value === isModerator ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                              <ListItemButton style={ium.value === isModerator ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                                 <ListItemIcon>
                                   <AddModeratorIcon />
                                 </ListItemIcon>
@@ -339,9 +332,9 @@ export default function UserListScreen() {
 
                       {/* Field Agents */}
                       <Divider />
-                      <Link style={{textDecoration: 'none'}} component={ReactRouterLink} to={getFilterUrl({ isFieldAgent: 'all' })}>
+                      <Link style={{textDecoration: 'none', color: 'black'}} component={ReactRouterLink} to={getFilterUrl({ isFieldAgent: 'all' })}>
                         <ListItem disablePadding>
-                          <ListItemButton style={'all' === isFieldAgent ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                          <ListItemButton style={'all' === isFieldAgent ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                             <ListItemIcon>
                               <GroupIcon />
                             </ListItemIcon>
@@ -351,9 +344,9 @@ export default function UserListScreen() {
                         </Link>
                         
                         {isUserFieldAgent.map((iufa) => (
-                          <Link style={{textDecoration: 'none'}} key={iufa.value} component={ReactRouterLink} to={getFilterUrl({ isFieldAgent: iufa.value })}>
+                          <Link style={{textDecoration: 'none', color: 'black'}} key={iufa.value} component={ReactRouterLink} to={getFilterUrl({ isFieldAgent: iufa.value })}>
                             <ListItem disablePadding key={iufa.value}>
-                              <ListItemButton style={iufa.value === isFieldAgent ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                              <ListItemButton style={iufa.value === isFieldAgent ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                                 <ListItemIcon>
                                   <SupportAgentIcon />
                                 </ListItemIcon>
@@ -365,9 +358,9 @@ export default function UserListScreen() {
 
                       {/* Farmers */}
                       <Divider />
-                      <Link style={{textDecoration: 'none'}} component={ReactRouterLink} to={getFilterUrl({ isFarmer: 'all' })}>
+                      <Link style={{textDecoration: 'none', color: 'black'}} component={ReactRouterLink} to={getFilterUrl({ isFarmer: 'all' })}>
                         <ListItem disablePadding>
-                          <ListItemButton style={'all' === isFarmer ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                          <ListItemButton style={'all' === isFarmer ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                             <ListItemIcon>
                               <GroupIcon />
                             </ListItemIcon>
@@ -377,9 +370,9 @@ export default function UserListScreen() {
                         </Link>
                         
                         {isUserFarmer.map((iuf) => (
-                          <Link style={{textDecoration: 'none'}} key={iuf.value} component={ReactRouterLink} to={getFilterUrl({ isFarmer: iuf.value })}>
+                          <Link style={{textDecoration: 'none', color: 'black'}} key={iuf.value} component={ReactRouterLink} to={getFilterUrl({ isFarmer: iuf.value })}>
                             <ListItem disablePadding key={iuf.value}>
-                              <ListItemButton style={iuf.value === isFarmer ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                              <ListItemButton style={iuf.value === isFarmer ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                                 <ListItemIcon>
                                   <AgricultureIcon />
                                 </ListItemIcon>
@@ -391,9 +384,9 @@ export default function UserListScreen() {
 
                       {/* Active */}
                       <Divider />
-                      <Link style={{textDecoration: 'none'}} component={ReactRouterLink} to={getFilterUrl({ isActive: 'all' })}>
+                      <Link style={{textDecoration: 'none', color: 'black'}} component={ReactRouterLink} to={getFilterUrl({ isActive: 'all' })}>
                         <ListItem disablePadding>
-                          <ListItemButton style={'all' === isActive ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                          <ListItemButton style={'all' === isActive ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                             <ListItemIcon>
                               <MoreHorizIcon />
                             </ListItemIcon>
@@ -403,9 +396,9 @@ export default function UserListScreen() {
                         </Link>
                         
                         {isUserActive.map((iua) => (
-                          <Link style={{textDecoration: 'none'}} key={iua.value} component={ReactRouterLink} to={getFilterUrl({ isActive: iua.value })}>
+                          <Link style={{textDecoration: 'none', color: 'black'}} key={iua.value} component={ReactRouterLink} to={getFilterUrl({ isActive: iua.value })}>
                             <ListItem disablePadding key={iua.value}>
-                              <ListItemButton style={iua.value === isActive ? {  backgroundColor: '#D3D3D3', color: 'black'}: {color: ''}}>
+                              <ListItemButton style={iua.value === isActive ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                                 <ListItemIcon>
                                   <NotificationImportantIcon />
                                 </ListItemIcon>
@@ -447,12 +440,12 @@ export default function UserListScreen() {
                       </CardContent>
                       <CardActions>
                         {userInfo && (userInfo.isAdmin || userInfo.isModerator) && (
-                          <IconButton onClick={() => navigate(`/user/edit/${user._id}`)} aria-label="edit">
+                          <IconButton sx={{color: "#00693e"}} onClick={() => navigate(`/user/edit/${user._id}`)} aria-label="edit">
                               <EditIcon/>
                           </IconButton>
                         )}
                         {userInfo && userInfo.isAdmin && (
-                        <IconButton onClick={() => deleteHandler(user)} aria-label="delete">
+                        <IconButton sx={{color: "#00693e"}} onClick={() => deleteHandler(user)} aria-label="delete">
                             <DeleteIcon/>
                         </IconButton>
                         )}

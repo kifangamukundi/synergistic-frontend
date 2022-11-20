@@ -1,13 +1,30 @@
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import * as React from 'react';
+import Link from '@mui/material/Link';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import Chip from '@mui/material/Chip';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
+import AdbIcon from '@mui/icons-material/Adb';
+
+import AccountCircle from '@mui/icons-material/AccountCircle';
+
+import { Link as ReactRouterLink, BrowserRouter, Route, Routes } from 'react-router-dom';
 import { toast, ToastContainer } from 'material-react-toastify';
 import 'material-react-toastify/dist/ReactToastify.min.css';
 import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import Container from 'react-bootstrap/Container';
-import { LinkContainer } from 'react-router-bootstrap';
+
+
 import { useContext, useEffect, useState } from 'react';
 import { Store } from './Store';
 import CartScreen from './screens/CartScreen';
@@ -19,7 +36,7 @@ import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import OrderScreen from './screens/OrderScreen';
 import OrderHistoryScreen from './screens/OrderHistoryScreen';
 import ProfileScreen from './screens/ProfileScreen';
-import Button from 'react-bootstrap/Button';
+
 import { getError, BASE_URL } from './utils';
 import axios from 'axios';
 import SearchBox from './components/SearchBox';
@@ -27,6 +44,7 @@ import SearchScreen from './screens/SearchScreen';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardScreen from './screens/DashboardScreen';
 import AdminRoute from './components/AdminRoute';
+
 // new protection routes
 import AdminOrModerator from './components/AdminOrModerator';
 import ProductListScreen from './screens/ProductListScreen';
@@ -43,9 +61,30 @@ import SurveyScreen from './screens/SurveyScreen';
 import SurveyAnalyzerScreen from './screens/SurveyAnalyzerScreen';
 import SurveyTabulatorScreen from './screens/SurveyTabulatorScreen';
 
+const pages = ['Products', 'Pricing', 'Blog'];
+
 function App() {
-  const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { fullBox, cart, userInfo } = state;
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+//   Original
+const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { cart, userInfo } = state;
 
   const signoutHandler = () => {
     ctxDispatch({ type: 'USER_SIGNOUT' });
@@ -54,7 +93,6 @@ function App() {
     localStorage.removeItem('paymentMethod');
     window.location.href = '/signin';
   };
-  const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -68,299 +106,507 @@ function App() {
     };
     fetchCategories();
   }, []);
+
   return (
     <BrowserRouter>
-      <div
-        className={
-          sidebarIsOpen
-            ? fullBox
-              ? 'site-container active-cont d-flex flex-column full-box'
-              : 'site-container active-cont d-flex flex-column'
-            : fullBox
-            ? 'site-container d-flex flex-column full-box'
-            : 'site-container d-flex flex-column'
-        }
-      >
-        <ToastContainer />
-        <header>
-          <Navbar bg="light" variant="light" expand="lg">
-            <Container>
+        <AppBar position="static" style={{ background: '#00693e' }}>
+        <Container maxWidth="xl">
+            <Toolbar disableGutters>
+            <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+            <Typography
+                variant="h6"
+                noWrap
+                component="a"
+                href="/"
+                sx={{
+                mr: 2,
+                display: { xs: 'none', md: 'flex' },
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
+                }}
+            >
+                SAS
+            </Typography>
+
+            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
+                >
+                <MenuIcon />
+                </IconButton>
+                <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                    display: { xs: 'block', md: 'none' },
+                }}
+                >
+                    <MenuItem component={ReactRouterLink} to="/services" key={"services"} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">
+                        Our Services
+                      </Typography>
+                    </MenuItem>
+                    <Divider/>
+
+                    <MenuItem component={ReactRouterLink} to="/features" key={"features"} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">
+                        Features
+                      </Typography>
+                    </MenuItem>
+                    <Divider/>
+
+                    <MenuItem component={ReactRouterLink} to="/pricing" key={"pricing"} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">
+                        Pricing
+                      </Typography>
+                    </MenuItem>
+                    <Divider/>
+
+                    <MenuItem component={ReactRouterLink} to="/about-us" key={"about-us"} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">
+                        About Us
+                      </Typography>
+                    </MenuItem>
+                    <Divider/>
+
+                    <MenuItem component={ReactRouterLink} to="/team" key={"team"} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">
+                        Meet The Team
+                      </Typography>
+                    </MenuItem>
+                    <Divider/>
+
+                    <MenuItem component={ReactRouterLink} to="/blog" key={"blog"} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">
+                        Blog
+                      </Typography>
+                    </MenuItem>
+                    <Divider/>
+
+                    <MenuItem component={ReactRouterLink} to="/faq" key={"faq"} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">
+                        FAQ
+                      </Typography>
+                    </MenuItem>
+                    <Divider/>
+
+                    <MenuItem component={ReactRouterLink} to="/contact" key={"contact"} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">
+                        Contact
+                      </Typography>
+                    </MenuItem>
+                    <Divider/>
+
+                </Menu>
+            </Box>
+
+            {/* desktop */}
+            <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+            <Typography
+                variant="h5"
+                noWrap
+                component="a"
+                href=""
+                sx={{
+                mr: 2,
+                display: { xs: 'flex', md: 'none' },
+                flexGrow: 1,
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
+                }}
+            >
+                SAS
+            </Typography>
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+
               <Button
-                variant="success"
-                onClick={() => setSidebarIsOpen(!sidebarIsOpen)}
+                key={"services"}
+                onClick={handleCloseNavMenu}
+                component={ReactRouterLink} to="/services"
+                sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                <i className="fas fa-bars"></i>
+                Our Services
               </Button>
 
-              <LinkContainer to="/">
-                <Navbar.Brand href="/">
-                  {/* <img
-                    alt=""
-                    src="/logo.png"
-                    width="400"
-                    height="280"
-                  /> */}
-                  SynergisticAgribusiness
-                </Navbar.Brand>
-              </LinkContainer>
-              <Navbar.Toggle aria-controls="basic-navbar-nav" />
-              <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="me-auto  w-100  justify-content-end">
-                  {/* <Link to="/cart" className="nav-link">
-                    Cart
-                    {cart.cartItems.length > 0 && (
-                      <Badge pill bg="danger">
-                        {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
-                      </Badge>
-                    )}
-                  </Link> */}
-                  {userInfo && (
-                    <Link to="/survey/list" className="nav-link">
-                      Survey Tools
-                    </Link>
-                  )}
-                 
-                   {userInfo && (userInfo.isAdmin || userInfo.isModerator) && (
-                    <NavDropdown title="Management" id="admin-nav-dropdown">
-                      <LinkContainer to="/user/list">
-                        <NavDropdown.Item>Users</NavDropdown.Item>
-                      </LinkContainer>
-                    </NavDropdown>
-                    )}
+              <Button
+                key={"features"}
+                onClick={handleCloseNavMenu}
+                component={ReactRouterLink} to="/features"
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Features
+              </Button>
 
-                    {/* Dashboard section */}
+              <Button
+                key={"pricing"}
+                onClick={handleCloseNavMenu}
+                component={ReactRouterLink} to="/pricing"
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Pricing
+              </Button>
+
+              <Button
+                key={"about-us"}
+                onClick={handleCloseNavMenu}
+                component={ReactRouterLink} to="/about"
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                About Us
+              </Button>
+
+              <Button
+                key={"team"}
+                onClick={handleCloseNavMenu}
+                component={ReactRouterLink} to="/team"
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Team
+              </Button>
+              
+              <Button
+                key={"blog"}
+                onClick={handleCloseNavMenu}
+                component={ReactRouterLink} to="/blog"
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Blog
+              </Button>
+
+              <Button
+                key={"faq"}
+                onClick={handleCloseNavMenu}
+                component={ReactRouterLink} to="/faq"
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                FAQ
+              </Button>
+
+              <Button
+                key={"contact"}
+                onClick={handleCloseNavMenu}
+                component={ReactRouterLink} to="/contact"
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Contact
+              </Button>
+
+            </Box>
+
+            {userInfo ? (
+              <Box sx={{ flexGrow: 0 }}>
+                  <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                      <Avatar alt={userInfo.firstName} src={userInfo.image} />
+                  </IconButton>
+                  </Tooltip>
+                  <Menu
+                  sx={{ mt: '45px' }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                  >
+                    <Divider>
+                      <Chip label="ACCOUNT SETTINGS" />
+                    </Divider>
+                    <MenuItem component={ReactRouterLink} to="/userdashboard" key={"userdashboard"} onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center">
+                        Dashboard
+                      </Typography>
+                    </MenuItem>
+                    <Divider/>
+                    <MenuItem component={ReactRouterLink} to="/profile" key={"profile"} onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center">
+                        Profile
+                      </Typography>
+                    </MenuItem>
+                    <Divider/>
+                    <MenuItem component={ReactRouterLink} to="/billing" key={"billing"} onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center">
+                        Billing
+                      </Typography>
+                    </MenuItem>
+                    <Divider/>
+                    <MenuItem component={ReactRouterLink} to="/survey/list" key={"tools"} onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center">
+                        Tools
+                      </Typography>
+                    </MenuItem>
+
+                    
                     {userInfo && userInfo.isAdmin && (
-                    <NavDropdown title="Dashboard" id="admin-nav-dropdown">
-                      <LinkContainer to="/admin/dashboard">
-                        <NavDropdown.Item>Dashboard</NavDropdown.Item>
-                      </LinkContainer>
-                      <LinkContainer to="/admin/products">
-                        <NavDropdown.Item>Products</NavDropdown.Item>
-                      </LinkContainer>
-                      <LinkContainer to="/admin/orders">
-                        <NavDropdown.Item>Orders</NavDropdown.Item>
-                      </LinkContainer>
-                    </NavDropdown>
-                  )}
+                      <>
+                        <Divider>
+                          <Chip label="ADMIN SETTINGS" />
+                        </Divider>
+                        <MenuItem component={ReactRouterLink} to="/admin/dashboard" key={"admindashboard"} onClick={handleCloseUserMenu}>
+                          <Typography textAlign="center">
+                            Dashboard
+                          </Typography>
+                        </MenuItem>
+                        <MenuItem component={ReactRouterLink} to="/admin/products" key={"adminproducts"} onClick={handleCloseUserMenu}>
+                          <Typography textAlign="center">
+                            Products
+                          </Typography>
+                        </MenuItem>
+                        <MenuItem component={ReactRouterLink} to="/admin/orders" key={"adminorders"} onClick={handleCloseUserMenu}>
+                          <Typography textAlign="center">
+                            Orders
+                          </Typography>
+                        </MenuItem>
+                      </>
+                    )}
 
-                  {/* User Profile section */}
-                  {userInfo ? (
-                    <NavDropdown title={`${userInfo.firstName} ${userInfo.lastName}`} id="basic-nav-dropdown">
-                      <LinkContainer to="/profile">
-                        <NavDropdown.Item>User Profile</NavDropdown.Item>
-                      </LinkContainer>
-                      {/* <LinkContainer to="/orderhistory">
-                        <NavDropdown.Item>Order History</NavDropdown.Item>
-                      </LinkContainer> */}
-                      <NavDropdown.Divider />
-                      <Link
-                        className="dropdown-item"
-                        to="#signout"
-                        onClick={signoutHandler}
-                      >
-                        Sign Out
-                      </Link>
-                    </NavDropdown>
-                  ) : (
-                    <Link className="nav-link" to="/signin">
-                      Sign In
-                    </Link>
-                  )}
+                    {userInfo && (userInfo.isAdmin || userInfo.isModerator) && (
+                      <>
+                        <Divider>
+                          <Chip label="MANAGEMENT SETTINGS" />
+                        </Divider>
+                        <MenuItem component={ReactRouterLink} to="/user/list" key={"adminusers"} onClick={handleCloseUserMenu}>
+                          <Typography textAlign="center">
+                            Users
+                          </Typography>
+                        </MenuItem>
+                      </>
+                    )}
 
-                  {userInfo && (
-                    <div className="navbar-header">
-                      <a className="navbar-brand" href="#">
-                        <img
-                          alt="Profile"
-                          src={userInfo.image}
-                          width="30"
-                          height="30"
-                          className="rounded"
-                        />
-                      </a>
-                    </div>
-                  )}
+                    <Divider>
+                      <Chip label="USER SESSION" />
+                    </Divider>
+                    <MenuItem component={ReactRouterLink} to="#signout" key={"logout"} onClick={() => [handleCloseUserMenu(), signoutHandler()]}>
+                      <Typography textAlign="center">
+                        Logout
+                      </Typography>
+                    </MenuItem>
 
-                </Nav>
-              </Navbar.Collapse>
-            </Container>
-          </Navbar>
-        </header>
-        {/* <div
-          className={
-            sidebarIsOpen
-              ? 'active-nav side-navbar d-flex justify-content-between flex-wrap flex-column'
-              : 'side-navbar d-flex justify-content-between flex-wrap flex-column'
-          }
-        >
-          <Nav className="flex-column text-white w-100 p-2">
-            <Nav.Item>
-              <strong>Categories</strong>
-            </Nav.Item>
-            {categories.map((category) => (
-              <Nav.Item key={category}>
-                <LinkContainer
-                  to={`/search?category=${category}`}
-                  onClick={() => setSidebarIsOpen(false)}
-                >
-                  <Nav.Link>{category}</Nav.Link>
-                </LinkContainer>
-              </Nav.Item>
-            ))}
-          </Nav>
-        </div> */}
-        <main>
-          <Container className="mt-3">
-            <Routes>
-              <Route path="/product/:slug" element={<ProductScreen />} />
-              <Route path="/cart" element={<CartScreen />} />
-              <Route path="/search" element={<SearchScreen />} />
-              <Route path="/signin" element={<SigninScreen />} />
-              <Route path="/signup" element={<SignupScreen />} />
+                  </Menu>
+              </Box>
+              ) : (
+                  <Box sx={{ flexGrow: 0 }}>
+                    <Tooltip title="Open settings">
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                        <AccountCircle/>
+                    </IconButton>
+                    </Tooltip>
+                    <Menu
+                    sx={{ mt: '45px' }}
+                    id="menu-appbar"
+                    anchorEl={anchorElUser}
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    open={Boolean(anchorElUser)}
+                    onClose={handleCloseUserMenu}
+                    >
+                      <Divider>
+                        <Chip label="GET STARTED" />
+                      </Divider>
+                      <MenuItem component={ReactRouterLink} to="/signin" key={"Login"} onClick={handleCloseUserMenu}>
+                        <Typography textAlign="center">
+                          Login
+                        </Typography>
+                      </MenuItem>
 
-              {/* Not signed in Protected routes */}
-              <Route
-                path="/survey/list"
-                element={
-                  <ProtectedRoute>
-                    <SurveyListScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/survey/:slug"
-                element={
-                  <ProtectedRoute>
-                    <SurveyScreen />
-                  </ProtectedRoute>
-                }
-              />
+                      <Divider/>
+                      <MenuItem component={ReactRouterLink} to="/signup" key={"signup"} onClick={handleCloseUserMenu}>
+                        <Typography textAlign="center">
+                          Register
+                        </Typography>
+                      </MenuItem>
 
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <ProfileScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/map"
-                element={
-                  <ProtectedRoute>
-                    <MapScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/placeorder" element={<PlaceOrderScreen />} />
-              <Route
-                path="/order/:id"
-                element={
-                  <ProtectedRoute>
-                    <OrderScreen />
-                  </ProtectedRoute>
-                }
-              ></Route>
-              <Route
-                path="/orderhistory"
-                element={
-                  <ProtectedRoute>
-                    <OrderHistoryScreen />
-                  </ProtectedRoute>
-                }
-              ></Route>
-              <Route
-                path="/shipping"
-                element={<ShippingAddressScreen />}
-              ></Route>
-              <Route path="/payment" element={<PaymentMethodScreen />}></Route>
-              {/* Admin Routes */}
-              <Route
-                path="/admin/dashboard"
-                element={
-                  <AdminRoute>
-                    <DashboardScreen />
-                  </AdminRoute>
-                }
-              ></Route>
-              <Route
-                path="/survey/analysis/:slug"
-                element={
-                  <AdminRoute>
-                    <SurveyAnalyzerScreen />
-                  </AdminRoute>
-                }
-              ></Route>
-              <Route
-                path="/survey/table/:slug"
-                element={
-                  <AdminRoute>
-                    <SurveyTabulatorScreen />
-                  </AdminRoute>
-                }
-              ></Route>
-              <Route
-                path="/admin/orders"
-                element={
-                  <AdminRoute>
-                    <OrderListScreen />
-                  </AdminRoute>
-                }
-              ></Route>
-              <Route
-                path="/admin/products"
-                element={
-                  <AdminRoute>
-                    <ProductListScreen />
-                  </AdminRoute>
-                }
-              ></Route>
-              <Route
-                path="/admin/product/:id"
-                element={
-                  <AdminRoute>
-                    <ProductEditScreen />
-                  </AdminRoute>
-                }
-              ></Route>
+                    </Menu>
+                </Box>
+            )}
+            </Toolbar>
+        </Container>
+        </AppBar>
+        {/* Main */}
+        <Container maxWidth="xl" style={{ background: '#f5f5f5' }}>
+        <Routes>
+          <Route path="/product/:slug" element={<ProductScreen />} />
+          <Route path="/cart" element={<CartScreen />} />
+          <Route path="/search" element={<SearchScreen />} />
+          <Route path="/signin" element={<SigninScreen />} />
+          <Route path="/signup" element={<SignupScreen />} />
 
-              {/* Admin or Moderator */}
-              <Route
-                path="/survey/edit/:id"
-                element={
-                  <AdminOrModerator>
-                    <SurveyEditScreen />
-                  </AdminOrModerator>
-                }
-              ></Route>
-              <Route
-                path="/user/list"
-                element={
-                  <AdminOrModerator>
-                    <UserListScreen />
-                  </AdminOrModerator>
-                }
-              ></Route>
-               <Route
-                  path="/user/edit/:id"
-                  element={
-                    <AdminOrModerator>
-                      <UserEditScreen />
-                    </AdminOrModerator>
-                  }
-                ></Route>
+          {/* Not signed in Protected routes */}
+          <Route
+            path="/survey/list"
+            element={
+              <ProtectedRoute>
+                <SurveyListScreen />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/survey/:slug"
+            element={
+              <ProtectedRoute>
+                <SurveyScreen />
+              </ProtectedRoute>
+            }
+          />
 
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfileScreen />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/map"
+            element={
+              <ProtectedRoute>
+                <MapScreen />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/placeorder" element={<PlaceOrderScreen />} />
+          <Route
+            path="/order/:id"
+            element={
+              <ProtectedRoute>
+                <OrderScreen />
+              </ProtectedRoute>
+            }
+          ></Route>
+          <Route
+            path="/orderhistory"
+            element={
+              <ProtectedRoute>
+                <OrderHistoryScreen />
+              </ProtectedRoute>
+            }
+          ></Route>
+          <Route
+            path="/shipping"
+            element={<ShippingAddressScreen />}
+          ></Route>
+          <Route path="/payment" element={<PaymentMethodScreen />}></Route>
+          {/* Admin Routes */}
+          <Route
+            path="/admin/dashboard"
+            element={
+              <AdminRoute>
+                <DashboardScreen />
+              </AdminRoute>
+            }
+          ></Route>
+          <Route
+            path="/survey/analysis/:slug"
+            element={
+              <AdminRoute>
+                <SurveyAnalyzerScreen />
+              </AdminRoute>
+            }
+          ></Route>
+          <Route
+            path="/survey/table/:slug"
+            element={
+              <AdminRoute>
+                <SurveyTabulatorScreen />
+              </AdminRoute>
+            }
+          ></Route>
+          <Route
+            path="/admin/orders"
+            element={
+              <AdminRoute>
+                <OrderListScreen />
+              </AdminRoute>
+            }
+          ></Route>
+          <Route
+            path="/admin/products"
+            element={
+              <AdminRoute>
+                <ProductListScreen />
+              </AdminRoute>
+            }
+          ></Route>
+          <Route
+            path="/admin/product/:id"
+            element={
+              <AdminRoute>
+                <ProductEditScreen />
+              </AdminRoute>
+            }
+          ></Route>
 
-              <Route path="/" element={<HomeScreen />} />
-            </Routes>
-          </Container>
-        </main>
+          {/* Admin or Moderator */}
+          <Route
+            path="/survey/edit/:id"
+            element={
+              <AdminOrModerator>
+                <SurveyEditScreen />
+              </AdminOrModerator>
+            }
+          ></Route>
+          <Route
+            path="/user/list"
+            element={
+              <AdminOrModerator>
+                <UserListScreen />
+              </AdminOrModerator>
+            }
+          ></Route>
+            <Route
+              path="/user/edit/:id"
+              element={
+                <AdminOrModerator>
+                  <UserEditScreen />
+                </AdminOrModerator>
+              }
+            ></Route>
+
+          <Route path="/" element={<HomeScreen />} />
+        </Routes>
+        <ToastContainer />
+        </Container>
         <footer>
           <div className="text-center">SynergisticAgribusiness All rights reserved</div>
         </footer>
-      </div>
     </BrowserRouter>
   );
 }
-
 export default App;
