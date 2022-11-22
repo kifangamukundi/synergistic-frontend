@@ -17,6 +17,16 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import MailIcon from '@mui/icons-material/Mail';
+import PhoneIcon from '@mui/icons-material/Phone';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import InfoIcon from '@mui/icons-material/Info';
+import Diversity3Icon from '@mui/icons-material/Diversity3';
+import MiscellaneousServicesIcon from '@mui/icons-material/MiscellaneousServices';
+import CopyrightIcon from '@mui/icons-material/Copyright';
+import GavelIcon from '@mui/icons-material/Gavel';
+import SecurityIcon from '@mui/icons-material/Security';
+import CookieIcon from '@mui/icons-material/Cookie';
 
 import { Link as ReactRouterLink, BrowserRouter, Route, Routes } from 'react-router-dom';
 import { toast, ToastContainer } from 'material-react-toastify';
@@ -60,8 +70,7 @@ import SurveyEditScreen from './screens/SurveyEditScreen';
 import SurveyScreen from './screens/SurveyScreen';
 import SurveyAnalyzerScreen from './screens/SurveyAnalyzerScreen';
 import SurveyTabulatorScreen from './screens/SurveyTabulatorScreen';
-
-const pages = ['Products', 'Pricing', 'Blog'];
+import { Grid } from '@mui/material';
 
 function App() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -109,6 +118,7 @@ const { state, dispatch: ctxDispatch } = useContext(Store);
 
   return (
     <BrowserRouter>
+      {/* Header */}
         <AppBar position="static" style={{ background: '#00693e' }}>
         <Container maxWidth="xl">
             <Toolbar disableGutters>
@@ -339,7 +349,7 @@ const { state, dispatch: ctxDispatch } = useContext(Store);
                   onClose={handleCloseUserMenu}
                   >
                     <Divider>
-                      <Chip label="ACCOUNT SETTINGS" />
+                      <Chip sx={{ backgroundColor: '#587246', color: "white" }} label="ACCOUNT SETTINGS" />
                     </Divider>
                     <MenuItem component={ReactRouterLink} to="/userdashboard" key={"userdashboard"} onClick={handleCloseUserMenu}>
                       <Typography textAlign="center">
@@ -367,9 +377,9 @@ const { state, dispatch: ctxDispatch } = useContext(Store);
 
                     
                     {userInfo && userInfo.isAdmin && (
-                      <>
+                      <Box>
                         <Divider>
-                          <Chip label="ADMIN SETTINGS" />
+                          <Chip sx={{ backgroundColor: '#587246', color: "white" }} label="ADMIN SETTINGS" />
                         </Divider>
                         <MenuItem component={ReactRouterLink} to="/admin/dashboard" key={"admindashboard"} onClick={handleCloseUserMenu}>
                           <Typography textAlign="center">
@@ -386,24 +396,24 @@ const { state, dispatch: ctxDispatch } = useContext(Store);
                             Orders
                           </Typography>
                         </MenuItem>
-                      </>
+                      </Box>
                     )}
 
                     {userInfo && (userInfo.isAdmin || userInfo.isModerator) && (
-                      <>
+                      <Box>
                         <Divider>
-                          <Chip label="MANAGEMENT SETTINGS" />
+                          <Chip sx={{ backgroundColor: '#587246', color: "white" }} label="MANAGEMENT SETTINGS" />
                         </Divider>
                         <MenuItem component={ReactRouterLink} to="/user/list" key={"adminusers"} onClick={handleCloseUserMenu}>
                           <Typography textAlign="center">
                             Users
                           </Typography>
                         </MenuItem>
-                      </>
+                      </Box>
                     )}
 
                     <Divider>
-                      <Chip label="USER SESSION" />
+                      <Chip sx={{ backgroundColor: '#587246', color: "white" }} label="USER SESSION" />
                     </Divider>
                     <MenuItem component={ReactRouterLink} to="#signout" key={"logout"} onClick={() => [handleCloseUserMenu(), signoutHandler()]}>
                       <Typography textAlign="center">
@@ -459,7 +469,7 @@ const { state, dispatch: ctxDispatch } = useContext(Store);
         </Container>
         </AppBar>
         {/* Main */}
-        <Container maxWidth="xl" style={{ background: '#f5f5f5' }}>
+        <main>
         <Routes>
           <Route path="/product/:slug" element={<ProductScreen />} />
           <Route path="/cart" element={<CartScreen />} />
@@ -602,9 +612,109 @@ const { state, dispatch: ctxDispatch } = useContext(Store);
           <Route path="/" element={<HomeScreen />} />
         </Routes>
         <ToastContainer />
-        </Container>
+        </main>
+        {/* Footer */}
         <footer>
-          <div className="text-center">SynergisticAgribusiness All rights reserved</div>
+          <Box px={{xs: 3, sm: 10}} py={{xs: 5, sm: 10}}
+            bgcolor="#4f7942" color="white">
+            <Container maxWidth="lg">
+              <Grid container spacing={5}>
+
+                <Grid xs={12} sm={6} md={3}>
+                  <Box>
+                    <Typography variant='body1' component="body1">
+                    <InfoIcon sx={{mr: 2}}/>
+                      <Link style={{textDecoration: 'none', color: 'inherit'}} component={ReactRouterLink} to="/">
+                        About Us
+                      </Link>
+                    </Typography>
+                  </Box>
+                  
+                  <Box>
+                    <Typography variant='body1' component="body1">
+                      <Diversity3Icon sx={{mr: 2}}/>
+                      <Link style={{textDecoration: 'none', color: 'inherit'}} component={ReactRouterLink} to="/">
+                        Meet The Team
+                      </Link>
+                    </Typography>
+                  </Box>
+
+                  <Box>
+                    <Typography variant='body1' component="body1">
+                      <MiscellaneousServicesIcon sx={{mr: 2}}/>
+                      <Link style={{textDecoration: 'none', color: 'inherit'}} component={ReactRouterLink} to="/">
+                        Our Services
+                      </Link>
+                    </Typography>
+                  </Box>
+                </Grid>
+
+                <Grid xs={12} sm={6} md={3}>
+                  <Box>
+                    <Typography variant='body1' component="body1">
+                      <GavelIcon sx={{mr: 2}}/>
+                      <Link style={{textDecoration: 'none', color: 'inherit'}} component={ReactRouterLink} to="/">
+                        Terms and Conditions
+                      </Link>
+                    </Typography>
+                  </Box>
+                  
+                  <Box>
+                    <Typography variant='body1' component="body1">
+                      <SecurityIcon sx={{mr: 2}}/>
+                      <Link style={{textDecoration: 'none', color: 'inherit'}} component={ReactRouterLink} to="/">
+                        Privacy Policy
+                      </Link>
+                    </Typography>
+                  </Box>
+
+                  <Box>
+                    <Typography variant='body1' component="body1">
+                      <CookieIcon sx={{mr: 2}}/>
+                      <Link style={{textDecoration: 'none', color: 'inherit'}} component={ReactRouterLink} to="/">
+                        Cookie Policy
+                      </Link>
+                    </Typography>
+                  </Box>
+                </Grid>
+
+                <Grid xs={12} sm={6} md={3}>
+                  <Box>
+                    <Typography variant='body1' component="body1">
+                      <MailIcon sx={{mr: 2}}/>
+                      <Link style={{textDecoration: 'none', color: 'inherit'}} component={ReactRouterLink} to="/">
+                        info@synergistic.com
+                      </Link>
+                    </Typography>
+                  </Box>
+                  
+                  <Box>
+                    <Typography variant='body1' component="body1">
+                      <PhoneIcon sx={{mr: 2}}/>
+                      <Link style={{textDecoration: 'none', color: 'inherit'}} component={ReactRouterLink} to="/">
+                        +254702817040
+                      </Link>
+                    </Typography>
+                  </Box>
+
+                  <Box>
+                    <Typography variant='body1' component="body1">
+                      <LocationOnIcon sx={{mr: 2}}/>
+                      <Link style={{textDecoration: 'none', color: 'inherit'}} component={ReactRouterLink} to="/">
+                        876, 10106 Nairobi, Kenya
+                      </Link>
+                    </Typography>
+                  </Box>
+                </Grid>
+
+              </Grid>
+              
+              <Box textAlign="center" pt={{xs: 5, sm: 10}} pb={{xs: 5, sm: 0}}>
+              <Divider color="white"/>
+                <Typography variant='h6' component="body1"><CopyrightIcon sx={{mr: 1}}/> {new Date().getFullYear()} SAS, Inc. All rights reserved.</Typography>
+              </Box>
+            </Container>
+          </Box>
         </footer>
     </BrowserRouter>
   );

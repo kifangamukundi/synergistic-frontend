@@ -100,41 +100,41 @@ const reducer = (state, action) => {
   ];
   const isUserAdmin = [
     {
-      name: 'Admin',
+      name: 'Only Admins',
       value: 'true',
     },
     {
-      name: 'Not Admin',
+      name: 'Excluding Admins',
       value: 'false',
     },
   ];
   const isUserModerator = [
     {
-      name: 'Moderator',
+      name: 'Only Mods',
       value: 'true',
     },
     {
-      name: 'Not Moderator',
+      name: 'Excluding Mods',
       value: 'false',
     },
   ];
   const isUserFieldAgent = [
     {
-      name: 'Field Agent',
+      name: 'Only Agents',
       value: 'true',
     },
     {
-      name: 'Not Field Agent',
+      name: 'Excluding Agents',
       value: 'false',
     },
   ];
   const isUserFarmer = [
     {
-      name: 'Farmer',
+      name: 'Only Farmers',
       value: 'true',
     },
     {
-      name: 'Not Farmer',
+      name: 'Excluding Farmers',
       value: 'false',
     },
   ];
@@ -224,81 +224,91 @@ export default function UserListScreen() {
   };
 
   return (
-    <div>
+    <Container maxWidth="xl" style={{ background: '#f5f5f5' }}>
+      {/* style={{ background: '#f5f5f5' }} */}
       <Helmet>
         <title>Search Users</title>
       </Helmet>
-          {loadingDelete && <LoadingBox></LoadingBox>}
+          {loadingDelete && <Box paddingY={1}><LoadingBox></LoadingBox></Box>}
           {loading ? (
-            <LoadingBox></LoadingBox>
+            <Box paddingY={1}><LoadingBox></LoadingBox></Box>
           ) : error ? (
-            <MessageBox severity="error">{error}</MessageBox>
+            <Box paddingY={1}>
+              <MessageBox severity="error">{error}</MessageBox>
+            </Box>
           ) : (
             <>
             
               {/* Search feature */}
-              <Paper
-                component="form"
-                sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+              <Box paddingY={1}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
               >
-                <InputBase
-                  sx={{ ml: 1, flex: 1 }}
-                  placeholder="Search For Users"
-                  inputProps={{ 'aria-label': 'search users' }}
-                  onChange={(e) => setQueryParams(e.target.value)}
-                  onKeyPress={e => e.key === 'Enter' && e.preventDefault()}
-                />
-                <IconButton onClick={submitHandler} type="button" sx={{ p: '10px' }} aria-label="search">
-                  <SearchIcon />
-                </IconButton>
-                <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                <IconButton sx={{ p: '10px', color: "#00693e" }} aria-label="directions">
-                  <FilterListIcon onClick={() => setIsDrawerOpen(true)}/>
-                </IconButton>
-              </Paper>
-              <br/>
+                <Paper
+                  component="form"
+                  sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 'auto' }}
+                >
+                  <InputBase
+                    sx={{ ml: 1, flex: 1 }}
+                    placeholder="Search For Users"
+                    inputProps={{ 'aria-label': 'search users' }}
+                    onChange={(e) => setQueryParams(e.target.value)}
+                    onKeyPress={e => e.key === 'Enter' && e.preventDefault()}
+                  />
+                  <IconButton onClick={submitHandler} type="button" sx={{ p: '10px', color: "#00693e" }} aria-label="search">
+                    <SearchIcon />
+                  </IconButton>
+                  <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                  <IconButton sx={{ p: '10px', color: "#00693e" }} aria-label="directions">
+                    <FilterListIcon onClick={() => setIsDrawerOpen(true)}/>
+                  </IconButton>
+                </Paper>
+              </Box>
 
               {users.length === 0 && (
-                <MessageBox>No User Found</MessageBox>
+                <Box paddingY={1}>
+                  <MessageBox><Typography variant='h6' component='body1'>No User Found</Typography></MessageBox>
+                </Box>
               )}
-              <br/>
 
               {/* Results */}
-              <Stack direction="row" spacing={1}>
-              {countUsers === 0 ? 'No' : countUsers} Results
-                {query !== 'all' && ' for '}
-                {query !== 'all' ? (
-                  <Chip label={query} variant="outlined" onDelete={handleChipDelete} />
-                ) : null}
-              </Stack>
-              <br/>
+              <Box paddingY={1}>
+                <Stack direction="row" spacing={1}>
+                {countUsers === 0 ? <Typography variant='h6' component='body1'>No</Typography> : <Typography variant='h6' component='body1'> <Chip label={countUsers} color="success" /></Typography>} <Typography variant='h6' component='body1'>Results</Typography>
+                  {query !== 'all' && <Typography variant='h6' component='body1'>For</Typography>}
+                  {query !== 'all' ? (
+                    <Chip label={<Typography variant='h6' component='body1'>{query}</Typography>} variant="outlined" onDelete={handleChipDelete} />
+                  ) : null}
+                </Stack>
+              </Box>
               
               {/* Filter Feature */}
               <Drawer anchor='right' open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
-                <Box p={2} width='250px' textAlign='center' role='presentation'>
+                <Box sx={{ backgroundColor: '#f5f5f5' }} p={2} width='250px' textAlign='center' role='presentation'>
                   <nav aria-label="main mailbox folders">
                     <List>
                       
                       {/* Admins */}
-                      <Link style={{textDecoration: 'none', color: 'black'}} component={ReactRouterLink} to={getFilterUrl({ isAdmin: 'all' })}>
+                      <Link style={{textDecoration: 'none', color: '#587246'}} component={ReactRouterLink} to={getFilterUrl({ isAdmin: 'all' })}>
                         <ListItem disablePadding>
                           <ListItemButton style={'all' === isAdmin ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                             <ListItemIcon>
-                              <GroupIcon />
+                              <GroupIcon sx={'all' === isAdmin ? { color: "white"}: {color: "#587246"}}/>
                             </ListItemIcon>
-                            <ListItemText primary="All Including Admins" />
+                            <ListItemText primary={<Typography variant='body1' component="body1">All Users</Typography>} />
                           </ListItemButton>
                         </ListItem>
                         </Link>
 
                         {isUserAdmin.map((iua) => (
-                          <Link style={{textDecoration: 'none', color: 'black'}} key={iua.value} component={ReactRouterLink} to={getFilterUrl({ isAdmin: iua.value })}>
+                          <Link style={{textDecoration: 'none', color: '#587246'}} key={iua.value} component={ReactRouterLink} to={getFilterUrl({ isAdmin: iua.value })}>
                             <ListItem disablePadding key={iua.value}>
                               <ListItemButton style={iua.value === isAdmin ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                                 <ListItemIcon>
-                                  <AdminPanelSettingsIcon />
+                                  <AdminPanelSettingsIcon sx={iua.value === isAdmin ? { color: "white"}: {color: "#587246"}}/>
                                 </ListItemIcon>
-                                <ListItemText primary={iua.name} />
+                                <ListItemText primary={<Typography variant='body1' component="body1">{iua.name}</Typography>} />
                               </ListItemButton>
                             </ListItem>
                         </Link>
@@ -306,25 +316,25 @@ export default function UserListScreen() {
 
                       {/* Moderators */}
                       <Divider />
-                      <Link style={{textDecoration: 'none', color: 'black'}} component={ReactRouterLink} to={getFilterUrl({ isModerator: 'all' })}>
+                      <Link style={{textDecoration: 'none', color: '#587246'}} component={ReactRouterLink} to={getFilterUrl({ isModerator: 'all' })}>
                         <ListItem disablePadding>
                           <ListItemButton style={'all' === isModerator ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                             <ListItemIcon>
-                              <GroupIcon />
+                              <GroupIcon sx={'all' === isModerator ? { color: "white"}: {color: "#587246"}}/>
                             </ListItemIcon>
-                            <ListItemText primary="All Including Moderators" />
+                            <ListItemText primary={<Typography variant='body1' component="body1">Any Mod</Typography>} />
                           </ListItemButton>
                         </ListItem>
                         </Link>
                         
                         {isUserModerator.map((ium) => (
-                          <Link style={{textDecoration: 'none', color: 'black'}} key={ium.value} component={ReactRouterLink} to={getFilterUrl({ isModerator: ium.value })}>
+                          <Link style={{textDecoration: 'none', color: '#587246'}} key={ium.value} component={ReactRouterLink} to={getFilterUrl({ isModerator: ium.value })}>
                             <ListItem disablePadding key={ium.value}>
                               <ListItemButton style={ium.value === isModerator ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                                 <ListItemIcon>
-                                  <AddModeratorIcon />
+                                  <AddModeratorIcon sx={ium.value === isModerator ? { color: "white"}: {color: "#587246"}}/>
                                 </ListItemIcon>
-                                <ListItemText primary={ium.name} />
+                                <ListItemText primary={<Typography variant='body1' component="body1">{ium.name}</Typography>} />
                               </ListItemButton>
                             </ListItem>
                         </Link>
@@ -332,25 +342,25 @@ export default function UserListScreen() {
 
                       {/* Field Agents */}
                       <Divider />
-                      <Link style={{textDecoration: 'none', color: 'black'}} component={ReactRouterLink} to={getFilterUrl({ isFieldAgent: 'all' })}>
+                      <Link style={{textDecoration: 'none', color: '#587246'}} component={ReactRouterLink} to={getFilterUrl({ isFieldAgent: 'all' })}>
                         <ListItem disablePadding>
                           <ListItemButton style={'all' === isFieldAgent ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                             <ListItemIcon>
-                              <GroupIcon />
+                              <GroupIcon sx={'all' === isFieldAgent ? { color: "white"}: {color: "#587246"}}/>
                             </ListItemIcon>
-                            <ListItemText primary="All Including FieldAgents" />
+                            <ListItemText primary={<Typography variant='body1' component="body1">Any Agent</Typography>} />
                           </ListItemButton>
                         </ListItem>
                         </Link>
                         
                         {isUserFieldAgent.map((iufa) => (
-                          <Link style={{textDecoration: 'none', color: 'black'}} key={iufa.value} component={ReactRouterLink} to={getFilterUrl({ isFieldAgent: iufa.value })}>
+                          <Link style={{textDecoration: 'none', color: '#587246'}} key={iufa.value} component={ReactRouterLink} to={getFilterUrl({ isFieldAgent: iufa.value })}>
                             <ListItem disablePadding key={iufa.value}>
                               <ListItemButton style={iufa.value === isFieldAgent ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                                 <ListItemIcon>
-                                  <SupportAgentIcon />
+                                  <SupportAgentIcon sx={iufa.value === isFieldAgent ? { color: "white"}: {color: "#587246"}}/>
                                 </ListItemIcon>
-                                <ListItemText primary={iufa.name} />
+                                <ListItemText primary={<Typography variant='body1' component="body1">{iufa.name}</Typography>} />
                               </ListItemButton>
                             </ListItem>
                         </Link>
@@ -358,25 +368,25 @@ export default function UserListScreen() {
 
                       {/* Farmers */}
                       <Divider />
-                      <Link style={{textDecoration: 'none', color: 'black'}} component={ReactRouterLink} to={getFilterUrl({ isFarmer: 'all' })}>
+                      <Link style={{textDecoration: 'none', color: '#587246'}} component={ReactRouterLink} to={getFilterUrl({ isFarmer: 'all' })}>
                         <ListItem disablePadding>
                           <ListItemButton style={'all' === isFarmer ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                             <ListItemIcon>
-                              <GroupIcon />
+                              <GroupIcon sx={'all' === isFarmer ? { color: "white"}: {color: "#587246"}}/>
                             </ListItemIcon>
-                            <ListItemText primary="All Including Farmers" />
+                            <ListItemText primary={<Typography variant='body1' component="body1">Any Farmer</Typography>} />
                           </ListItemButton>
                         </ListItem>
                         </Link>
                         
                         {isUserFarmer.map((iuf) => (
-                          <Link style={{textDecoration: 'none', color: 'black'}} key={iuf.value} component={ReactRouterLink} to={getFilterUrl({ isFarmer: iuf.value })}>
+                          <Link style={{textDecoration: 'none', color: '#587246'}} key={iuf.value} component={ReactRouterLink} to={getFilterUrl({ isFarmer: iuf.value })}>
                             <ListItem disablePadding key={iuf.value}>
                               <ListItemButton style={iuf.value === isFarmer ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                                 <ListItemIcon>
-                                  <AgricultureIcon />
+                                  <AgricultureIcon sx={iuf.value === isFarmer ? { color: "white"}: {color: "#587246"}}/>
                                 </ListItemIcon>
-                                <ListItemText primary={iuf.name} />
+                                <ListItemText primary={<Typography variant='body1' component="body1">{iuf.name}</Typography>} />
                               </ListItemButton>
                             </ListItem>
                         </Link>
@@ -384,25 +394,25 @@ export default function UserListScreen() {
 
                       {/* Active */}
                       <Divider />
-                      <Link style={{textDecoration: 'none', color: 'black'}} component={ReactRouterLink} to={getFilterUrl({ isActive: 'all' })}>
+                      <Link style={{textDecoration: 'none', color: '#587246'}} component={ReactRouterLink} to={getFilterUrl({ isActive: 'all' })}>
                         <ListItem disablePadding>
                           <ListItemButton style={'all' === isActive ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                             <ListItemIcon>
-                              <MoreHorizIcon />
+                              <MoreHorizIcon sx={'all' === isActive ? { color: "white"}: {color: "#587246"}}/>
                             </ListItemIcon>
-                            <ListItemText primary="Both Active and Inactive" />
+                            <ListItemText primary={<Typography variant='body1' component="body1">Any Status</Typography>} />
                           </ListItemButton>
                         </ListItem>
                         </Link>
                         
                         {isUserActive.map((iua) => (
-                          <Link style={{textDecoration: 'none', color: 'black'}} key={iua.value} component={ReactRouterLink} to={getFilterUrl({ isActive: iua.value })}>
+                          <Link style={{textDecoration: 'none', color: '#587246'}} key={iua.value} component={ReactRouterLink} to={getFilterUrl({ isActive: iua.value })}>
                             <ListItem disablePadding key={iua.value}>
                               <ListItemButton style={iua.value === isActive ? {  backgroundColor: '#587246', color: 'white'}: {color: ''}}>
                                 <ListItemIcon>
-                                  <NotificationImportantIcon />
+                                  <NotificationImportantIcon sx={iua.value === isActive ? { color: "white"}: {color: "#587246"}}/>
                                 </ListItemIcon>
-                                <ListItemText primary={iua.name} />
+                                <ListItemText primary={<Typography variant='body1' component="body1">{iua.name}</Typography>} />
                               </ListItemButton>
                             </ListItem>
                         </Link>
@@ -414,11 +424,10 @@ export default function UserListScreen() {
               </Drawer>
 
               {/* cards */}
-              <Container>
                 <Grid container spacing={3}>
                   
                 {users.map((user) => (
-                  <Grid item xs={12} sm={6} md={3}>
+                  <Grid item xs={12} sm={6} md={3} key={user._id}>
 
                     <Card sx={{ maxWidth: 345 }} elevation={1}>
                       <CardMedia
@@ -456,9 +465,8 @@ export default function UserListScreen() {
                   ))}
 
                 </Grid>
-              </Container>
 
-              <div>
+              <Box paddingY={1}>
                 {[...Array(pages).keys()].map((x) => (
                   <LinkContainer
                     key={x + 1}
@@ -473,9 +481,9 @@ export default function UserListScreen() {
                     </Button>
                   </LinkContainer>
                 ))}
-              </div>
+              </Box>
             </>
           )}
-    </div>
+    </Container>
   );
 }
