@@ -1,16 +1,31 @@
 import axios from 'axios';
 import React, { useContext, useEffect, useReducer, useState } from 'react';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
 import { Helmet } from 'react-helmet-async';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link as ReactRouterLink, useNavigate, useParams } from 'react-router-dom';
 import {  toast } from 'material-react-toastify';
 
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { Store } from '../Store';
 import { getError, BASE_URL } from '../utils';
+
+import Checkbox from '@mui/material/Checkbox';
+import InputLabel from '@mui/material/InputLabel';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import EditIcon from '@mui/icons-material/Edit';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import Stack from '@mui/material/Stack';
+
+const theme = createTheme();
 
 
 const reducer = (state, action) => {
@@ -115,106 +130,164 @@ export default function UserEditScreen() {
     }
   };
   return (
-    <Container className="small-container">
-      <Helmet>
-        <title>Edit User ${userId}</title>
-      </Helmet>
-      <h1>Edit User {userId}</h1>
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <Helmet>
+            <title>Editing {firstName} {lastName}</title>
+        </Helmet>
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: '#587246' }}>
+            <EditIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            {firstName} {lastName}
+          </Typography>
 
-      {loading ? (
-        <LoadingBox></LoadingBox>
-      ) : error ? (
-        <MessageBox variant="danger">{error}</MessageBox>
-      ) : (
-        <Form onSubmit={submitHandler}>
-          <Form.Group className="mb-3" controlId="firstName">
-            <Form.Label>First Name</Form.Label>
-            <Form.Control
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="lastName">
-            <Form.Label>Last Name</Form.Label>
-            <Form.Control
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="mobileNumber">
-            <Form.Label>Mobile Number</Form.Label>
-            <Form.Control
-              value={mobileNumber}
-              onChange={(e) => setMobileNumber(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="email">
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              value={email}
-              type="email"
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </Form.Group>
+          {loading ? (
+            <LoadingBox></LoadingBox>
+          ) : error ? (
+            <MessageBox severity="error">{error}</MessageBox>
+          ) : (
+          <Box component="form" noValidate onSubmit={submitHandler} sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <InputLabel htmlFor="firstName">First  Name</InputLabel>
+                <TextField
+                  autoComplete="given-name"
+                  name="firstName"
+                  required
+                  fullWidth
+                  id="firstName"
+                  autoFocus
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+              </Grid>
+              
+              <Grid item xs={12} sm={6}>
+                <InputLabel htmlFor="lastName">Last  Name</InputLabel>
+                <TextField
+                  required
+                  fullWidth
+                  id="lastName"
+                  name="lastName"
+                  autoComplete="family-name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <InputLabel htmlFor="email">Email</InputLabel>
+                <TextField
+                  required
+                  fullWidth
+                  id="email"
+                  name="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <InputLabel htmlFor="mobileNumber">Mobile Number</InputLabel>
+                <TextField
+                  required
+                  fullWidth
+                  id="mobileNumber"
+                  name="mobileNumber"
+                  autoComplete="mobileNumber"
+                  value={mobileNumber}
+                  onChange={(e) => setMobileNumber(e.target.value)}
+                />
+              </Grid>
+              
+              {userInfo && userInfo.isAdmin && (
+                <>
+                  <Grid item xs={12} sm={6}>
+                    <InputLabel htmlFor="isAdmin">Admin Status</InputLabel>
+                    <Checkbox
+                      id="isAdmin"
+                      color="success"
+                      checked={isAdmin}
+                      onChange={(e) => setIsAdmin(e.target.checked)}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <InputLabel htmlFor="isModerator">Moderator Status</InputLabel>
+                    <Checkbox
+                      id="isModerator"
+                      color="success"
+                      checked={isModerator}
+                      onChange={(e) => setIsModerator(e.target.checked)}
+                    />
+                  </Grid>
+                </>
+              )}
 
-          {userInfo && userInfo.isAdmin && (
-          <>
-            <Form.Check
-              className="mb-3"
-              type="checkbox"
-              id="isAdmin"
-              label="isAdmin"
-              checked={isAdmin}
-              onChange={(e) => setIsAdmin(e.target.checked)}
-            />
-            <Form.Check
-              className="mb-3"
-              type="checkbox"
-              id="isModerator"
-              label="isModerator"
-              checked={isModerator}
-              onChange={(e) => setIsModerator(e.target.checked)}
-            />
-          </>
-          )}
-
-          <Form.Check
-            className="mb-3"
-            type="checkbox"
-            id="isFieldAgent"
-            label="isFieldAgent"
-            checked={isFieldAgent}
-            onChange={(e) => setIsFieldAgent(e.target.checked)}
-          />
-          <Form.Check
-            className="mb-3"
-            type="checkbox"
-            id="isFarmer"
-            label="isFarmer"
-            checked={isFarmer}
-            onChange={(e) => setIsFarmer(e.target.checked)}
-          />
-          <Form.Check
-            className="mb-3"
-            type="checkbox"
-            id="isActive"
-            label="isActive"
-            checked={isActive}
-            onChange={(e) => setIsActive(e.target.checked)}
-          />
-
-          <div className="mb-3">
-            <Button disabled={loadingUpdate} type="submit">
+              <Grid item xs={12} sm={6}>
+                <InputLabel htmlFor="isFieldAgent">FieldAgent Status</InputLabel>
+                <Checkbox
+                  id="isFieldAgent"
+                  color="success"
+                  checked={isFieldAgent}
+                  onChange={(e) => setIsFieldAgent(e.target.checked)}
+                />
+              </Grid>
+              
+              <Grid item xs={12} sm={6}>
+                <InputLabel htmlFor="isFarmer">Farmer Status</InputLabel>
+                <Checkbox
+                  id="isFarmer"
+                  color="success"
+                  checked={isFarmer}
+                  onChange={(e) => setIsFarmer(e.target.checked)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <InputLabel htmlFor="isActive">Activity Status</InputLabel>
+                <Checkbox
+                    id="isActive"
+                    color="success"
+                    checked={isActive}
+                    onChange={(e) => setIsActive(e.target.checked)}
+                />
+              </Grid>
+              
+            </Grid>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="success"
+              sx={{ mt: 3, mb: 2 }}
+              disabled={loadingUpdate}
+            >
               Update
             </Button>
             {loadingUpdate && <LoadingBox></LoadingBox>}
-          </div>
-        </Form>
-      )}
-    </Container>
+            <Grid container>
+              <Grid item>
+                <Box paddingY={2}>
+                  <Stack direction="row" spacing={2}>
+                    <Button color="success" component={ReactRouterLink} to="/user/list" variant="contained" endIcon={<ArrowBackIcon />}>
+                      Back
+                    </Button>
+                  </Stack>
+                </Box>
+              </Grid>
+            </Grid>
+          </Box>
+        )}
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 }
