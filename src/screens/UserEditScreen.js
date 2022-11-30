@@ -150,6 +150,7 @@ export default function UserEditScreen() {
           <Typography component="h1" variant="h5">
             {firstName} {lastName}
           </Typography>
+          {loadingUpdate && <LoadingBox></LoadingBox>}
 
           {loading ? (
             <LoadingBox></LoadingBox>
@@ -272,12 +273,11 @@ export default function UserEditScreen() {
             >
               Update
             </Button>
-            {loadingUpdate && <LoadingBox></LoadingBox>}
             <Grid container>
               <Grid item>
                 <Box paddingY={2}>
                   <Stack direction="row" spacing={2}>
-                    <Button color="success" component={ReactRouterLink} to="/user/list" variant="contained" endIcon={<ArrowBackIcon />}>
+                    <Button disabled={loadingUpdate} color="success" component={ReactRouterLink} to="/user/list" variant="contained" endIcon={<ArrowBackIcon />}>
                       Back
                     </Button>
                   </Stack>

@@ -3,18 +3,24 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 import Typography from '@mui/material/Typography';
+import InputLabel from '@mui/material/InputLabel';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import Stack from '@mui/material/Stack';
+
+
+import LoadingBox from '../components/LoadingBox';
+import MessageBox from '../components/MessageBox';
 import Axios from 'axios';
 import { Link as ReactRouterLink, useLocation, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useReducer,useEffect, useState } from 'react';
 import { Store } from '../Store';
 import {  toast } from 'material-react-toastify';
 
@@ -22,6 +28,19 @@ import { getError, BASE_URL } from '../utils';
 
 
 const theme = createTheme();
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'SIGNUP_REQUEST':
+      return { ...state, signUpStatus: true };
+    case 'SIGNUP_SUCCESS':
+      return { ...state, signUpStatus: false };
+    case 'SIGNUP_FAIL':
+      return { ...state, signUpStatus: false, error: action.payload };
+    default:
+      return state;
+  }
+};
 
 export default function SignupScreen() {
     const navigate = useNavigate();
@@ -36,6 +55,10 @@ export default function SignupScreen() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
+    const [{ signUpStatus, error }, dispatch] = useReducer(reducer, {
+      error: '',
+    });
+
     const { state, dispatch: ctxDispatch } = useContext(Store);
     const { userInfo } = state;
     const submitHandler = async (e) => {
@@ -45,18 +68,29 @@ export default function SignupScreen() {
         return;
         }
         try {
+        dispatch({ type: 'SIGNUP_REQUEST' });
         const { data } = await Axios.post(`${BASE_URL}/api/users/signup`, {
             firstName,
             lastName,
             mobileNumber,
             email,
             password,
+            confirmPassword,
         });
         ctxDispatch({ type: 'USER_SIGNIN', payload: data });
         localStorage.setItem('userInfo', JSON.stringify(data));
+        dispatch({ type: 'SIGNUP_SUCCESS' });
+        toast.success('Registered Successfully');
         navigate(redirect || '/');
         } catch (err) {
-        toast.error(getError(err));
+          dispatch({
+            type: 'SIGNUP_FAIL',
+            payload: getError(err),
+          });
+          const resp = err.response.data.message;
+          resp.forEach((item, index, arr) => {
+            toast.error(item);
+          }); 
         }
     };
 
@@ -81,65 +115,78 @@ export default function SignupScreen() {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
+          <Avatar sx={{ m: 1, bgcolor: '#587246' }}>
+            <LockOpenIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
+
+          {signUpStatus ? (
+            <LoadingBox></LoadingBox>
+          ) : error ? (
+            <>
+              {error.map((err) => (
+                <MessageBox key={err} severity="error">{err}</MessageBox>
+              ))}
+            </>
+          ) : (
+            <></>
+          )}
+
           <Box component="form" noValidate onSubmit={submitHandler} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
+                <InputLabel htmlFor="firstName">First Name</InputLabel>
                 <TextField
                   autoComplete="given-name"
                   name="firstName"
                   required
                   fullWidth
                   id="firstName"
-                  label="First Name"
                   autoFocus
                   onChange={(e) => setFirstName(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
+                <InputLabel htmlFor="lastName">Last Name</InputLabel>
                 <TextField
                   required
                   fullWidth
                   id="lastName"
-                  label="Last Name"
                   name="lastName"
                   autoComplete="family-name"
                   onChange={(e) => setLastName(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
+                <InputLabel htmlFor="email">Email Address</InputLabel>
                 <TextField
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
                   name="email"
                   autoComplete="email"
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
+                <InputLabel htmlFor="mobileNumber">Mobile Number</InputLabel>
                 <TextField
                   required
                   fullWidth
                   id="mobileNumber"
-                  label="Mobile Number"
                   name="mobileNumber"
                   autoComplete="mobileNumber"
                   onChange={(e) => setMobileNumber(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
+                <InputLabel htmlFor="password">Password</InputLabel>
                 <TextField
                   required
                   fullWidth
                   name="password"
-                  label="Password"
                   type="password"
                   id="password"
                   autoComplete="new-password"
@@ -147,11 +194,11 @@ export default function SignupScreen() {
                 />
               </Grid>
               <Grid item xs={12}>
+                <InputLabel htmlFor="confirmPassword">Confirm Password</InputLabel>
                 <TextField
                   required
                   fullWidth
                   name="confirmPassword"
-                  label="Confirm Password"
                   type="password"
                   id="confirmPassword"
                   autoComplete="confirm-password"
@@ -161,17 +208,23 @@ export default function SignupScreen() {
             </Grid>
             <Button
               type="submit"
+              color="success"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={signUpStatus}
             >
               Sign Up
             </Button>
             <Grid container>
               <Grid item>
-                <Link component={ReactRouterLink} to={`/signin?redirect=${redirect}`} variant="body2">
-                  Already have an account? Sign in
-                </Link>
+                <Box paddingY={2}>
+                  <Stack direction="row" spacing={2}>
+                    <Button disabled={signUpStatus} color="success" component={ReactRouterLink} to={`/signin?redirect=${redirect}`} variant="contained" endIcon={<ArrowForwardIcon />}>
+                      {"Already have an account? Sign in"}
+                    </Button>
+                  </Stack>
+                </Box>
               </Grid>
             </Grid>
           </Box>
