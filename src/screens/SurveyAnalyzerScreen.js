@@ -4,15 +4,18 @@ import 'survey-analytics/survey.analytics.min.css';
 import { Model } from 'survey-core';
 import { VisualizationPanel } from 'survey-analytics';
 import { useParams } from 'react-router-dom';
-import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
-import Accordion from 'react-bootstrap/Accordion';
 import { Helmet } from 'react-helmet-async';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { getError, BASE_URL } from '../utils';
 import { Store } from '../Store';
-import {  toast } from 'material-react-toastify';
+
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import TableRowsIcon from '@mui/icons-material/TableRows';
+import Divider from '@mui/material/Divider';
 
 
 const vizPanelOptions = {
@@ -112,42 +115,39 @@ function loadSurveyResults (url) {
   });
 }
 
-  return loading ? (
-    <LoadingBox />
-  ) : error ? (
-    <MessageBox variant="danger">{error}</MessageBox>
-  ) : (
-    <div>
-      <Helmet>
-        <title>{ `Analysis - ${ surveyProps?.name }` }</title>
-        <meta name="description" content={surveyProps?.description}></meta>
-      </Helmet>
-      <Accordion>
-        <Accordion.Item eventKey="0">
-          <Accordion.Header>Survey Results and other Properties</Accordion.Header>
-          <Accordion.Body>
-            <Card className="text-center">
-              <Card.Header>Category: {surveyProps?.category}</Card.Header>
-              <Card.Body>
-                  <Card.Title>Title: {surveyProps?.name}</Card.Title>
-                  <Card.Text>
-                    Description: {surveyProps?.description}
-                  </Card.Text>
-                  <Button 
-                    onClick={() => { navigate(`/survey/table/${surveyProps?.slug}`);}} 
-                    variant="primary"
-                  >
-                    View Tables
-                  </Button>
-              </Card.Body>
-              <Card.Footer className="text-muted">Responses: {surveyProps?.numResponses}</Card.Footer>
-            </Card>
-          </Accordion.Body>
-        </Accordion.Item>
-      </Accordion>
-      <div ref={surveyRef} id="surveyVizPanel" />
-    </div>
-  );
+return (
+  <Container maxWidth="xl" style={{ background: '#f5f5f5' }}>
+    {/* style={{ background: '#f5f5f5' }} */}
+    <Helmet>
+      <title>{ `Charts - ${ surveyProps?.name }` }</title>
+      <meta name="description" content={surveyProps?.description}></meta>
+    </Helmet>
+        {loading ? (
+          <Box paddingY={1}><LoadingBox></LoadingBox></Box>
+        ) : error ? (
+          <Box paddingY={1}>
+            <MessageBox severity="error">{error}</MessageBox>
+          </Box>
+        ) : (
+          <>
+            <Box paddingY={1}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Typography variant='h5' component="body1">{ surveyProps?.name } - Analysis</Typography>
+              <Divider sx={{ height: 28, m: 0.5, color: "#00693e" }} orientation="vertical" />
+              <IconButton sx={{ p: '10px', color: "#00693e" }} aria-label="Tables">
+                <TableRowsIcon onClick={() => { navigate(`/survey/table/${surveyProps?.slug}`);}}/>
+              </IconButton>
+            </Box>
+            <Box paddingY={2}>
+              <div ref={surveyRef} id="surveyVizPanel" />
+            </Box>
+          </>
+        )}
+  </Container>
+);
 }
 
 // const surveyResults = survey?.responses?.map(({ response }) => response)?.join(', ')

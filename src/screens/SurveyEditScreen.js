@@ -1,18 +1,44 @@
-import React, { useContext, useEffect, useReducer, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import * as React from 'react';
+import Link from '@mui/material/Link';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+
+
+import Card from '@mui/material/Card';
+import CardMedia from '@mui/material/CardMedia';
+
+
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
+import TextField from '@mui/material/TextField';
+import Checkbox from '@mui/material/Checkbox';
+
+import InputLabel from '@mui/material/InputLabel';
+import Button from '@mui/material/Button';
+
+import Stack from '@mui/material/Stack';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
+
+import { useContext, useEffect, useReducer, useState } from 'react';
+import { Link as ReactRouterLink, useNavigate, useLocation, useParams } from 'react-router-dom';
+import axios from 'axios';
 import {  toast } from 'material-react-toastify';
 
-import axios from 'axios';
-import { Store } from '../Store';
 import { getError, BASE_URL } from '../utils';
-import Form from 'react-bootstrap/Form';
+import { Store } from '../Store';
 import { Helmet } from 'react-helmet-async';
+
+// shiet
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Accordion from 'react-bootstrap/Accordion';
+
+import { formatDistance } from 'date-fns';
 
 // Tools imports
 import { SurveyCreatorComponent, SurveyCreator } from "survey-creator-react";
@@ -60,6 +86,7 @@ const creatorOptions = {
   showTranslationTab: true,
   showEmbeddedSurveyTab: true
 };
+
 export default function SurveyEditScreen() {
   const navigate = useNavigate();
   const params = useParams(); // /survey/:id
@@ -82,6 +109,9 @@ export default function SurveyEditScreen() {
   const [description, setDescription] = useState('');
   const [surveyJson, setSurveyJson] = useState('');
 
+  const [image, setImage] = useState('');
+  const [images, setImages] = useState(userInfo.images);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -92,6 +122,8 @@ export default function SurveyEditScreen() {
         setIsActive(data.isActive);
         setCategory(data.category);
         setDescription(data.description);
+        setImage(data.image);
+        setImages(data.images);
         setSurveyJson(data.surveyJson);
         dispatch({ type: 'FETCH_SUCCESS' });
       } catch (err) {
@@ -133,6 +165,8 @@ export default function SurveyEditScreen() {
           isActive,
           category,
           description,
+          image,
+          images,
           surveyJson,
         },
         {
@@ -149,95 +183,195 @@ export default function SurveyEditScreen() {
       dispatch({ type: 'UPDATE_FAIL' });
     }
   };
-  return (
-    <div>
-      <Row>
-        <Col>
-          <Helmet>
-            <title>Edit Survey {surveyId}</title>
-          </Helmet>
-          <h1>Editing - {name}</h1>
-        </Col>
-      <div>
-          {loading ? (
-            <LoadingBox></LoadingBox>
-          ) : error ? (
-            <MessageBox variant="danger">{error}</MessageBox>
-          ) : (
-          <Col className="col text-end">
-                <Accordion>
-                  <Accordion.Item eventKey="0">
-                    <Accordion.Header>Other Properties And Save</Accordion.Header>
-                    <Accordion.Body>
-                      <Form onSubmit={submitHandler}>
-                        <Form.Group className="mb-2" controlId="name">
-                          <Form.Label>Name</Form.Label>
-                          <Form.Control
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            required
-                          />
-                        </Form.Group>
-                        <Form.Group className="mb-2" controlId="slug">
-                          <Form.Label>Slug</Form.Label>
-                          <Form.Control
-                            value={slug}
-                            onChange={(e) => setSlug(e.target.value)}
-                            required
-                          />
-                        </Form.Group>
 
-                        <Form.Group className="mb-2" controlId="category">
-                          <Form.Label>Category</Form.Label>
-                          <Form.Control
-                            value={category}
-                            onChange={(e) => setCategory(e.target.value)}
-                            required
-                          />
-                        </Form.Group>
-                        <Form.Group className="mb-2" controlId="description">
-                          <Form.Label>Description</Form.Label>
-                          <Form.Control
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            required
-                          />
-                        </Form.Group>
-                        <Form.Group className="mb-2" controlId="surveyJson">
-                          <Form.Label>Survey Schema Json</Form.Label>
-                          <Form.Control
-                            value={surveyJson}
-                            onChange={(e) => setSurveyJson(e.target.value)}
-                            required
-                          />
-                        </Form.Group>
-                        <Form.Check
-                          className="mb-3"
-                          type="checkbox"
-                          id="isActive"
-                          label="isActive"
-                          checked={isActive}
-                          onChange={(e) => setIsActive(e.target.checked)}
-                        />
-                        <div className="mb-2">
-                          <Button 
-                            disabled={loadingUpdate} 
-                            type="submit"
-                            variant="success"
-                          >
-                            Save
-                          </Button>
-                          {loadingUpdate && <LoadingBox></LoadingBox>}
-                        </div>
-                      </Form>
-                    </Accordion.Body>
-                  </Accordion.Item>
-                </Accordion>
-          </Col>
+  const uploadFileHandler = async (e, forImages) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append('file', file);
+    try {
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      const { data } = await axios.post(`${BASE_URL}/api/upload`, bodyFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      dispatch({ type: 'UPLOAD_SUCCESS' });
+
+      if (forImages) {
+        setImages([...images, data.secure_url]);
+      } else {
+        setImage(data.secure_url);
+      }
+      toast.success('Image uploaded successfully. click Update to apply it');
+    } catch (err) {
+      toast.error(getError(err));
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+    }
+  };
+
+  // New stuff
+  const [expanded, setExpanded] = React.useState(false);
+
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+
+  return (
+    <Container maxWidth="xl" style={{ background: '#f5f5f5' }}>
+      {/* style={{ background: '#f5f5f5' }} */}
+      <Helmet>
+        <title>Edit Survey {name}</title>
+      </Helmet>
+          {loadingUpdate && <Box paddingY={1}><LoadingBox></LoadingBox></Box>}
+          {loading ? (
+            <Box paddingY={1}><LoadingBox></LoadingBox></Box>
+          ) : error ? (
+            <Box paddingY={1}>
+              <MessageBox severity="error">{error}</MessageBox>
+            </Box>
+          ) : (
+            <>
+              <Box paddingY={1}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                {/* Properties */}
+                <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls="panel1bh-content"
+                      id="panel1bh-header"
+                    >
+                      <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                        General settings
+                      </Typography>
+                      <Typography sx={{ color: 'text.secondary' }}>Editing - {name}</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Box component="form" noValidate onSubmit={submitHandler} sx={{ mt: 3 }}>
+                        <Grid container spacing={2}>
+                          <Grid item xs={12} sm={6}>
+                            <InputLabel htmlFor="name">Tool  Name</InputLabel>
+                            <TextField
+                              autoComplete="tool-name"
+                              name="name"
+                              required
+                              fullWidth
+                              id="name"
+                              autoFocus
+                              value={name}
+                              onChange={(e) => setName(e.target.value)}
+                            />
+                          </Grid>
+                          
+                          <Grid item xs={12} sm={6}>
+                            <InputLabel htmlFor="slug">Slug</InputLabel>
+                            <TextField
+                              required
+                              disabled
+                              fullWidth
+                              id="slug"
+                              name="slug"
+                              autoComplete="tool-slug"
+                              value={slug}
+                              onChange={(e) => setSlug(e.target.value)}
+                            />
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <InputLabel htmlFor="category">Category</InputLabel>
+                            <TextField
+                              required
+                              fullWidth
+                              id="category"
+                              name="category"
+                              autoComplete="tool-category"
+                              value={category}
+                              onChange={(e) => setCategory(e.target.value)}
+                            />
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <InputLabel htmlFor="surveyJson">Survey Design Settings</InputLabel>
+                            <TextField
+                              required
+                              disabled
+                              fullWidth
+                              id="surveyJson"
+                              name="surveyJson"
+                              autoComplete="surveyJson"
+                              value={surveyJson}
+                              onChange={(e) => setSurveyJson(e.target.value)}
+                            />
+                          </Grid>
+                          <Grid item xs={12}>
+                            <InputLabel htmlFor="description">Tool description</InputLabel>
+                            <TextField
+                              required
+                              fullWidth
+                              id="description"
+                              name="description"
+                              autoComplete="description"
+                              value={description}
+                              onChange={(e) => setDescription(e.target.value)}
+                            />
+                          </Grid>
+                          
+                          <Grid item xs={12} sm={6}>
+                            <InputLabel htmlFor="isActive">Tool Status</InputLabel>
+                            <Checkbox
+                              id="isActive"
+                              color="success"
+                              checked={isActive}
+                              onChange={(e) => setIsActive(e.target.checked)}
+                            />
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <Grid item xs={12} sm={6}>
+                              <InputLabel htmlFor="isActive">Tool Media</InputLabel>
+                              <Stack direction="row" alignItems="center" spacing={2}>
+                                <IconButton disabled={loadingUpload} color="success" aria-label="upload picture" component="label">
+                                  <input hidden accept="image/*" type="file" onChange={uploadFileHandler} />
+                                  <PhotoCamera />
+                                </IconButton>
+                              </Stack>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                            <Card sx={{ maxWidth: 345 }} elevation={1}>
+                              <CardMedia
+                                component="img"
+                                height="140"
+                                image={image}
+                                alt={name}
+                              />
+                            {loadingUpload && <LoadingBox></LoadingBox>}
+                            </Card>
+                            </Grid>
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <Button
+                              type="submit"
+                              fullWidth
+                              variant="contained"
+                              color="success"
+                              sx={{ mt: 3, mb: 2 }}
+                              disabled={loadingUpdate}
+                            >
+                              Update
+                            </Button>
+                          </Grid>
+
+                        </Grid>
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+              </Box>
+              {/* cards */}
+              <Box paddingY={2}>
+                <SurveyCreatorComponent creator={creator} />
+              </Box>
+            </>
           )}
-        </div>
-      </Row>
-      <SurveyCreatorComponent creator={creator} />
-    </div>
+    </Container>
   );
 }

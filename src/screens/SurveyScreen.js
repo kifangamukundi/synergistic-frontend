@@ -1,18 +1,20 @@
-import axios from 'axios';
+import * as React from 'react';
+import Link from '@mui/material/Link';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+
 import { useCallback, useContext, useEffect, useReducer, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
-import ListGroup from 'react-bootstrap/ListGroup';
-import Accordion from 'react-bootstrap/Accordion';
-import { Helmet } from 'react-helmet-async';
-import LoadingBox from '../components/LoadingBox';
-import MessageBox from '../components/MessageBox';
-import { getError, BASE_URL } from '../utils';
-import { Store } from '../Store';
+import { Link as ReactRouterLink, useNavigate, useLocation, useParams } from 'react-router-dom';
+import axios from 'axios';
 import {  toast } from 'material-react-toastify';
 
+import { getError, BASE_URL } from '../utils';
+import { Store } from '../Store';
+import { Helmet } from 'react-helmet-async';
+
+// shiet
+import LoadingBox from '../components/LoadingBox';
+import MessageBox from '../components/MessageBox';
 
 
 // Modern theme
@@ -55,7 +57,7 @@ const exportToPdfOptions = {
   haveCommercialLicense: true
 };
 
-function SurveyScreen() {
+export default function SurveyScreen() {
   const navigate = useNavigate();
   const params = useParams();
   const { slug } = params;
@@ -138,55 +140,31 @@ function SurveyScreen() {
   function onValueChanged(_, options) {
     console.log("New value: " + options.value);
   }
-  return loading ? (
-    <LoadingBox />
-  ) : error ? (
-    <MessageBox variant="danger">{error}</MessageBox>
-  ) : (
-    <div>
+
+  return (
+    <Container maxWidth="xl" style={{ background: '#f5f5f5' }}>
+      {/* style={{ background: '#f5f5f5' }} */}
       <Helmet>
-        <title>{survey.name} - Tool</title>
-        <meta name="description" content={survey.description}></meta>
+        <title>{ `${ survey.name } - Tool` }</title>
+        <meta name="description" content={`${survey.description}`}></meta>
       </Helmet>
-      <Row>
-        <Col md={12}>
-          <Accordion>
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>{survey.name} (and other Properties)</Accordion.Header>
-              <Accordion.Body>
-                <Card>
-                  <Card.Body>
-                    <ListGroup variant="flush">
-                      <ListGroup.Item>
-                        <Row>
-                          <Col>Tool or survey ID:</Col>
-                          <Col>{survey._id}</Col>
-                        </Row>
-                      </ListGroup.Item>
-                      <ListGroup.Item>
-                        <Row>
-                          <Col>Data Collection for survey:</Col>
-                          <Col>{survey.name}</Col>
-                        </Row>
-                      </ListGroup.Item>
-                      <ListGroup.Item>
-                        <Row>
-                          <Col>Current Number of Responses:</Col>
-                          <Col>
-                            {survey.numResponses}
-                          </Col>
-                        </Row>
-                      </ListGroup.Item>
-                    </ListGroup>
-                  </Card.Body>
-                </Card>
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion>
-          <Survey model={surveyStart} onValueChanged={onValueChanged} />
-        </Col>
-      </Row>
-    </div>
+          {loading ? (
+            <Box paddingY={1}><LoadingBox></LoadingBox></Box>
+          ) : error ? (
+            <Box paddingY={1}>
+              <MessageBox severity="error">{error}</MessageBox>
+            </Box>
+          ) : (
+            <>
+              <Box paddingY={1}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Survey model={surveyStart} onValueChanged={onValueChanged} />
+              </Box>
+            </>
+          )}
+    </Container>
   );
 }
-export default SurveyScreen;
