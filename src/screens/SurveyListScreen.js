@@ -451,13 +451,13 @@ export default function SearchScreen() {
                       />
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
-                          {survey.name}
+                          {survey.name.slice(0, 50)}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                           {survey.category}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          {survey.description}
+                          {survey.description.slice(0, 90)}
                         </Typography>
                         {userInfo && (userInfo.isAdmin || userInfo.isModerator) && (
                           <Box>

@@ -4,7 +4,7 @@ export const getError = (error) => {
     : error.message;
 };
 
-export const BASE_URL = "https://backend-xtowfqi6oq-uc.a.run.app";
+export const BASE_URL = "https://sas-render.onrender.com";
 
 
 //  Local URI: http://localhost:5000

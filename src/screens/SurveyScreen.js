@@ -18,9 +18,9 @@ import MessageBox from '../components/MessageBox';
 
 
 // Modern theme
-import 'survey-core/modern.min.css';
+// import 'survey-core/modern.min.css';
 // Default V2 theme
-// import 'survey-core/defaultV2.min.css';
+import 'survey-core/defaultV2.min.css';
 import { StylesManager, Model } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 
@@ -28,7 +28,7 @@ import { SurveyPDF } from 'survey-pdf';
 
 // const SURVEY_ID = 1;
 
-StylesManager.applyTheme("modern");
+StylesManager.applyTheme("defaultV2");
 
 const reducer = (state, action) => {
   switch (action.type) {

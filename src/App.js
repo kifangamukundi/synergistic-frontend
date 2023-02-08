@@ -32,7 +32,6 @@ import { Link as ReactRouterLink, BrowserRouter, Route, Routes } from 'react-rou
 import { toast, ToastContainer } from 'material-react-toastify';
 import 'material-react-toastify/dist/ReactToastify.min.css';
 import HomeScreen from './screens/HomeScreen';
-import ProductScreen from './screens/ProductScreen';
 
 
 import { useContext, useEffect, useState } from 'react';
@@ -42,14 +41,10 @@ import SigninScreen from './screens/SigninScreen';
 import ShippingAddressScreen from './screens/ShippingAddressScreen';
 import SignupScreen from './screens/SignupScreen';
 import PaymentMethodScreen from './screens/PaymentMethodScreen';
-import PlaceOrderScreen from './screens/PlaceOrderScreen';
-import OrderScreen from './screens/OrderScreen';
-import OrderHistoryScreen from './screens/OrderHistoryScreen';
 import ProfileScreen from './screens/ProfileScreen';
 
 import { getError, BASE_URL } from './utils';
 import axios from 'axios';
-import SearchBox from './components/SearchBox';
 import SearchScreen from './screens/SearchScreen';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardScreen from './screens/DashboardScreen';
@@ -57,9 +52,6 @@ import AdminRoute from './components/AdminRoute';
 
 // new protection routes
 import AdminOrModerator from './components/AdminOrModerator';
-import ProductListScreen from './screens/ProductListScreen';
-import ProductEditScreen from './screens/ProductEditScreen';
-import OrderListScreen from './screens/OrderListScreen';
 import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
 import MapScreen from './screens/MapScreen';
@@ -102,19 +94,6 @@ const { state, dispatch: ctxDispatch } = useContext(Store);
     localStorage.removeItem('paymentMethod');
     window.location.href = '/signin';
   };
-  const [categories, setCategories] = useState([]);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const { data } = await axios.get(`${BASE_URL}/api/products/categories`);
-        setCategories(data);
-      } catch (err) {
-        toast.error(getError(err));
-      }
-    };
-    fetchCategories();
-  }, []);
 
   return (
     <BrowserRouter>
@@ -386,16 +365,6 @@ const { state, dispatch: ctxDispatch } = useContext(Store);
                             Dashboard
                           </Typography>
                         </MenuItem>
-                        <MenuItem component={ReactRouterLink} to="/admin/products" key={"adminproducts"} onClick={handleCloseUserMenu}>
-                          <Typography textAlign="center">
-                            Products
-                          </Typography>
-                        </MenuItem>
-                        <MenuItem component={ReactRouterLink} to="/admin/orders" key={"adminorders"} onClick={handleCloseUserMenu}>
-                          <Typography textAlign="center">
-                            Orders
-                          </Typography>
-                        </MenuItem>
                       </Box>
                     )}
 
@@ -471,7 +440,6 @@ const { state, dispatch: ctxDispatch } = useContext(Store);
         {/* Main */}
         <main>
         <Routes>
-          <Route path="/product/:slug" element={<ProductScreen />} />
           <Route path="/cart" element={<CartScreen />} />
           <Route path="/search" element={<SearchScreen />} />
           <Route path="/signin" element={<SigninScreen />} />
@@ -511,23 +479,6 @@ const { state, dispatch: ctxDispatch } = useContext(Store);
               </ProtectedRoute>
             }
           />
-          <Route path="/placeorder" element={<PlaceOrderScreen />} />
-          <Route
-            path="/order/:id"
-            element={
-              <ProtectedRoute>
-                <OrderScreen />
-              </ProtectedRoute>
-            }
-          ></Route>
-          <Route
-            path="/orderhistory"
-            element={
-              <ProtectedRoute>
-                <OrderHistoryScreen />
-              </ProtectedRoute>
-            }
-          ></Route>
           <Route
             path="/shipping"
             element={<ShippingAddressScreen />}
@@ -555,30 +506,6 @@ const { state, dispatch: ctxDispatch } = useContext(Store);
             element={
               <AdminRoute>
                 <SurveyTabulatorScreen />
-              </AdminRoute>
-            }
-          ></Route>
-          <Route
-            path="/admin/orders"
-            element={
-              <AdminRoute>
-                <OrderListScreen />
-              </AdminRoute>
-            }
-          ></Route>
-          <Route
-            path="/admin/products"
-            element={
-              <AdminRoute>
-                <ProductListScreen />
-              </AdminRoute>
-            }
-          ></Route>
-          <Route
-            path="/admin/product/:id"
-            element={
-              <AdminRoute>
-                <ProductEditScreen />
               </AdminRoute>
             }
           ></Route>
