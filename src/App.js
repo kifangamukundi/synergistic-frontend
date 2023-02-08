@@ -454,12 +454,12 @@ const { state, dispatch: ctxDispatch } = useContext(Store);
               </ProtectedRoute>
             }
           />
+
+          {/* Disabled survey access momentarily */}
           <Route
             path="/survey/:slug"
             element={
-              <ProtectedRoute>
                 <SurveyScreen />
-              </ProtectedRoute>
             }
           />
 
